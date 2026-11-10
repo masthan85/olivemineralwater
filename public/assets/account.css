@@ -15,11 +15,22 @@
 .account-period { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; }
 .account-period select { border: 1px solid #aaa28b; border-radius: 5px; background: #fffdf6; padding: 5px 8px; color: var(--ink); font: inherit; }
 .account-actions { margin-top: 15px; }
-.account-actions .button[hidden], #signin-options[hidden] { display: none; }
-.account-provider { gap: 10px; background: #fff; border-color: #aaa28b; color: var(--ink); }
-.account-provider:hover { background: var(--cream); border-color: var(--green); }
+.account-actions .button[hidden] { display: none; }
+/* Signed out: a single centred log-in column replaces the account heading and two-column layout. */
+.account-main--signin .account-intro { display: none; }
+.account-main--signin .account-layout { grid-template-columns: minmax(0, 360px); justify-content: center; margin-top: 0; }
+.account-main--signin #account-status { max-width: 360px; margin-inline: auto; text-align: center; }
+.account-main--signin #account-status:not(:empty) { margin-bottom: 22px; }
+.account-login { text-align: center; }
+.account-login h1 { font-size: clamp(34px, 5vw, 42px); }
+.account-login p { margin-top: 14px; color: var(--muted); font-size: 15px; }
+.account-providers { display: grid; gap: 12px; margin-top: 26px; }
+.account-providers[hidden], .account-provider[hidden] { display: none; }
+.account-provider { gap: 10px; width: 100%; min-height: 48px; background: #fffdf6; border-color: #aaa28b; color: var(--ink); font-size: 15px; }
+.account-provider:hover { background: #fff; border-color: var(--green); }
 .account-provider svg { flex: none; }
-@media (max-width: 480px) { .account-provider { width: 100%; } }
+#signin-note { margin-top: 26px; }
+.account-login a:not(.button) { color: var(--ink); font-weight: 600; text-underline-offset: .3em; text-decoration-color: var(--gold-text); }
 .account-order + .account-order { margin-top: 12px; }
 .account-order ul { margin: 10px 0; padding-left: 20px; }
 .account-order h3 { overflow-wrap: anywhere; }

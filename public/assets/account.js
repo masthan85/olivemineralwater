@@ -72,13 +72,14 @@ async function refresh() {
   const data = await api("/api/customer");
   signin.hidden = Boolean(data.account);
   history.hidden = details.hidden = !data.account;
+  document.querySelector(".account-main").classList.toggle("account-main--signin", !data.account);
   if (!data.account) {
     savedOrders = [];
     orders.replaceChildren();
     document.querySelector("#account-email").textContent = "";
     document.querySelectorAll("[data-provider]").forEach((link) => { link.hidden = !data.providers.includes(link.dataset.provider); });
     const available = data.providers.length > 0;
-    document.querySelector("#signin-options").hidden = document.querySelector("#signin-intro").hidden = !available;
+    for (const id of ["#signin-options", "#signin-intro", "#signin-note"]) document.querySelector(id).hidden = !available;
     if (!available) status.textContent = "Online account sign-in is unavailable right now. Guest order tracking is available.";
     return;
   }

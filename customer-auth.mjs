@@ -16,7 +16,7 @@ const redirect = (response, location, cookies = []) => {
 const profile = (account) => account ? { email: account.email } : null;
 
 export function customerAccounts({ origin, env, getStore, fetcher = fetch }) {
-  const allowed = new Set(["google", "azure"]);
+  const allowed = new Set(["google", "azure", "apple"]);
   const key = env.SUPABASE_PUBLISHABLE_KEY;
   const requested = [...new Set((env.OLIVE_CUSTOMER_PROVIDERS || "google,azure").split(",")
     .map((part) => part.trim().toLowerCase()).filter((part) => allowed.has(part)))];
@@ -25,7 +25,7 @@ export function customerAccounts({ origin, env, getStore, fetcher = fetch }) {
   if (!env.SUPABASE_URL) missing.push("SUPABASE_URL is not set");
   if (!key) missing.push("SUPABASE_PUBLISHABLE_KEY is not set");
   else if (!key.startsWith("sb_publishable_")) missing.push("SUPABASE_PUBLISHABLE_KEY must be the Supabase key that begins with sb_publishable_");
-  if (!requested.length) missing.push("OLIVE_CUSTOMER_PROVIDERS must list google, azure or both");
+  if (!requested.length) missing.push("OLIVE_CUSTOMER_PROVIDERS must list at least one of google, azure and apple");
   if (missing.length) console.warn(`Customer sign-in is off for ${origin.origin}: ${missing.join("; ")}.`);
   const providers = missing.length ? [] : requested;
   const authUrl = (path) => {
@@ -83,8 +83,8 @@ export function customerAccounts({ origin, env, getStore, fetcher = fetch }) {
     }
   }
   async function get(request, response, path, json) {
-    if (path === "/api/customer-google") return begin(response, "google");
-    if (path === "/api/customer-azure") return begin(response, "azure");
+    const provider = /^\/api\/customer-(google|azure|apple)$/.exec(path)?.[1];
+    if (provider) return begin(response, provider);
     if (path === "/api/customer-callback") return callback(request, response);
     if (!["/api/customer", "/api/customer-profile"].includes(path)) throw new HttpError(404, "Page not found.");
     const account = await session(request);
