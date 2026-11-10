@@ -4,6 +4,7 @@
   "type": "module",
   "engines": { "node": ">=24.14.0" },
   "scripts": {
+    "build": "node vercel-build.mjs",
     "demo": "node server.mjs --demo",
     "start": "node server.mjs"
   }

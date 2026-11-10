@@ -1,5 +1,7 @@
 # OLIVE Distribution Platform
 
+For the hosted setup, follow the [Vercel deployment guide](VERCEL.md).
+
 The public OLIVE website and staff workspace run from the same Node.js service. Customers submit order requests and trade enquiries. Staff review requests, link customers, reserve batches, dispatch orders and record delivery outcomes. Customers can check their status with a tracking reference and postcode.
 
 ## Run the local demo
