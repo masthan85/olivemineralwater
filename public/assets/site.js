@@ -33,7 +33,8 @@ if (bottle) {
   }
 }
 
-const form = document.querySelector("form.request-form");
+// Email fallback for static forms only. Forms handled by intake.js carry no data-email.
+const form = document.querySelector("form.request-form[data-email]");
 if (form) {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
