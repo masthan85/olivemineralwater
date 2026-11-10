@@ -69,9 +69,11 @@ function fields(entries) {
 }
 
 const mime = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8", ".jpg": "image/jpeg", ".png": "image/png" };
-export const publicPages = new Set(["index.html", "about.html", "delivery.html", "products.html", "track.html", "order.html", "trade-enquiry.html", "login.html"]);
+export const publicPages = new Set(["index.html", "about.html", "delivery.html", "products.html", "track.html", "order.html", "trade-enquiry.html", "login.html", "account.html"]);
 export const staffPages = new Set(["operations.html", ...["assets", "customers", "deliveries", "orders", "reports", "requests", "traceability", "warehouse"].map((name) => `ops-${name}.html`)]);
-export function createHandler({ origin, demo = false, storage, limit, route = (request) => new URL(request.url, origin).pathname }) {
+export const apiNames = ["config", "workspace", "login", "tracking", "requests", "logout", "commands",
+  "customer", "customer-profile", "customer-google", "customer-azure", "customer-callback", "customer-claim", "customer-cancel", "customer-logout"];
+export function createHandler({ origin, demo = false, storage, limit, customers, route = (request) => new URL(request.url, origin).pathname }) {
   const secure = origin.protocol === "https:";
   const cookieName = secure ? "__Host-olive_staff" : "olive_staff";
   let passwordChecks = 0;
@@ -81,6 +83,15 @@ export function createHandler({ origin, demo = false, storage, limit, route = (r
   }
 
   async function handleApi(request, response, path, account) {
+    if (path === "/api/customer" || path.startsWith("/api/customer-")) {
+      if (!customers && request.method === "GET" && ["/api/customer", "/api/customer-profile"].includes(path)) {
+        return json(response, 200, { account: null, providers: [], orders: [] });
+      }
+      if (!customers) throw new HttpError(404, "Customer sign-in is unavailable.");
+      if (request.method === "GET") return customers.get(request, response, path, json);
+      if (request.method === "POST") return customers.post(request, response, path, await body(request, origin), json);
+      throw new HttpError(405, "Method not allowed.");
+    }
     if (request.method === "GET" && path === "/api/config") return json(response, 200, { demo });
     if (request.method === "GET" && path === "/api/workspace") {
       if (!account) throw new HttpError(401, "Sign in to view the workspace.");
@@ -129,8 +140,12 @@ export function createHandler({ origin, demo = false, storage, limit, route = (r
     }
     if (path === "/api/requests") {
       await limit(request, "intake", 20, 600000);
-      const result = await storage.write("public", "submit-request", "", null, (state) => domain.intake(state, fields(data.fields)));
-      return json(response, 201, { reference: result.result.reference });
+      const form = fields(data.fields);
+      const customer = await customers?.session(request);
+      if (form.get("expectAccount") === "1" && !customer) throw new HttpError(401, "Your session expired. Sign in again to save the request to your account.");
+      const actor = customer ? "customer:" + customer.user_id : "public";
+      const result = await storage.write(actor, "submit-request", "", null, (state) => domain.intake(state, form, customer));
+      return json(response, 201, { reference: result.result.reference, savedToAccount: Boolean(customer) });
     }
     account = await session(request);
     if (!account) throw new HttpError(401, "Sign in to continue.");

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Account | OLIVE Pure Mineral Water</title>
+  <link rel="stylesheet" href="assets/site.css">
+  <link rel="stylesheet" href="assets/account.css">
+  <script type="module" src="assets/account.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap nav-wrap">
+      <a href="index.html" aria-label="OLIVE home"><img class="logo" src="assets/olive-logo.png" width="1311" height="389" alt="OLIVE"></a>
+      <a class="button button--line" href="products.html">Browse the range</a>
+    </div>
+  </header>
+  <main class="wrap account-main">
+    <p class="kicker">OLIVE customer account</p>
+    <h1>My Account</h1>
+    <p class="account-lead">See what you’ve ordered, follow deliveries, and request your favourites again.</p>
+    <p id="account-status" role="status"></p>
+    <div class="account-layout">
+      <section id="account-signin" class="account-panel" hidden>
+        <h2>Sign in or create an account</h2>
+        <p>Use the email address you order with. We’ll create your account the first time you sign in.</p>
+        <div class="account-actions" id="signin-options">
+          <a class="button button--green" data-provider="google" href="/api/customer-google" hidden>Continue with Google</a>
+          <a class="button button--green" data-provider="azure" href="/api/customer-azure" hidden>Continue with Microsoft</a>
+        </div>
+        <p><a href="track.html">Track a delivery as a guest</a></p>
+      </section>
+      <section id="account-history" hidden>
+        <div class="account-heading">
+          <div><h2>Order history</h2><p id="account-count"></p></div>
+          <a href="order.html" class="button button--green">New order request</a>
+        </div>
+        <label class="account-period">Show orders from <select id="account-period">
+          <option value="">All time</option>
+          <option value="30">Last 30 days</option>
+          <option value="90">Last 90 days</option>
+          <option value="365">Last 12 months</option>
+        </select></label>
+        <div id="account-orders"></div>
+      </section>
+      <aside id="account-details" class="account-panel" hidden>
+        <h2>Your account</h2>
+        <p id="account-email"></p>
+        <button class="button button--green" id="account-signout" type="button">Sign out</button>
+        <hr>
+        <h3>Link an earlier order</h3>
+        <p>Enter the tracking reference and delivery postcode. The order email must match your sign-in email.</p>
+        <form id="account-claim" method="post">
+          <label>Tracking reference <input name="reference" required maxlength="32" autocomplete="off"></label>
+          <label>Delivery postcode <input name="postcode" required maxlength="12" autocomplete="postal-code"></label>
+          <button class="button button--green" type="submit">Link order</button>
+        </form>
+      </aside>
+    </div>
+    <noscript><p>Enable JavaScript to manage your account. You can still contact the OLIVE team by email.</p></noscript>
+  </main>
+  <footer class="site-footer"><div class="wrap"><a href="delivery.html">Delivery &amp; Help</a> · <a href="mailto:hello@olivemineralwater.co.uk">Contact OLIVE</a></div></footer>
+</body>
+</html>

@@ -17,7 +17,7 @@ document.addEventListener("keydown", (event) => {
     toggle.focus();
   }
 });
-matchMedia("(max-width: 860px)").addEventListener("change", () => setMenu(false));
+matchMedia("(max-width: 980px)").addEventListener("change", () => setMenu(false));
 
 if (document.body.classList.contains("home")) {
   const updateHeader = () => header.classList.toggle("is-solid", window.scrollY > 18);

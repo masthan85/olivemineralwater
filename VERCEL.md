@@ -25,4 +25,12 @@ The public website is served as static files. Vercel runs the staff pages and AP
 
 The hosted workspace starts empty apart from the product catalogue. This setup creates a fresh database. If you have real records in an existing SQLite database, migrate them before switching over.
 
+To add customer order history and social sign-in to an existing deployment, follow the [customer accounts guide](CUSTOMER-ACCOUNTS.md).
+
+## Connect the OLIVE domain
+
+In **Vercel → Settings → Domains**, copy the project-specific A record for `olivemineralwater.co.uk` and CNAME for `www.olivemineralwater.co.uk`. In GoDaddy DNS, update the existing `@` A record and `www` CNAME to match. Keep the root-to-www redirect in Vercel and preserve your email DNS records.
+
+When both domains show **Valid Configuration**, set Production `OLIVE_ORIGIN` to `https://www.olivemineralwater.co.uk` and redeploy. If customer sign-in is enabled, update the Supabase Site URL and callback as described in the customer accounts guide.
+
 Use a separate Supabase project and environment variables for any shared preview where you want to exercise the API. Vercel restricts the Hobby plan to personal, non-commercial use. Use an eligible plan for the live OLIVE business.

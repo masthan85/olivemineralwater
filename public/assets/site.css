@@ -167,7 +167,7 @@ p + p { margin-top: 1.25rem; }
   .bottle-grid { gap: 16px; }
   .bottle-info { padding: 16px; }
 }
-@media (max-width: 860px) {
+@media (max-width: 980px) {
   .wrap { width: calc(100% - 40px); }
   .nav-wrap { min-height: 66px; }
   .home .site-header { margin-bottom: -66px; }

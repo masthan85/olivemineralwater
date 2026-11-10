@@ -98,6 +98,12 @@ export function hostedStorage(env = process.env, fetcher = fetch) {
 
   return {
     read, staff, write,
+    customerSession: (hash, now) => one("olive_customer_sessions", { token_hash: "eq." + hash, expires: "gt." + now, select: "token_hash,user_id,email,csrf" }),
+    deleteCustomerSession: (hash) => query("olive_customer_sessions", { method: "DELETE", params: { token_hash: "eq." + hash } }),
+    async createCustomerSession(row) {
+      await query("olive_customer_sessions", { method: "DELETE", params: { expires: "lte." + Date.now() } });
+      await query("olive_customer_sessions", { method: "POST", payload: row, prefer: "return=minimal" });
+    },
     session: (hash, now) => one("olive_sessions", { token_hash: "eq." + hash, expires: "gt." + now, select: "token_hash,email,csrf,expires" }),
     deleteSession: (hash) => query("olive_sessions", { method: "DELETE", params: { token_hash: "eq." + hash } }),
     createSession: (row, previous) => rpc("olive_start_session", {

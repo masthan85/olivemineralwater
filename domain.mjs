@@ -56,7 +56,7 @@ export function newOrder(draft, data) {
   draft.orders.unshift({
     id: orderId, tracking: reference(), customer: customer.id, status: "Ready to dispatch", created: db.localDay(), expected,
     lines: Array.from(lines, ([lot, qty]) => ({ lot, qty })), asset: "", reference: "", dispatched: "", delivered: "", proof: "", exception: "",
-    recipient: { name: customer.name, address: request?.address || customer.address, postcode: request?.postcode || customer.postcode },
+    recipient: { name: customer.name, email: request?.email || customer.email, address: request?.address || customer.address, postcode: request?.postcode || customer.postcode },
   });
   if (request) {
     request.orderId = orderId;
@@ -187,10 +187,10 @@ export function saveCustomer(draft, data, customerId) {
   return update(draft, `Customer ${customerId ? "updated" : "added"} · ${record.name}`, "customers");
 }
 
-export function intake(draft, data) {
+export function intake(draft, data, account = null) {
   const kind = needed(data, "kind", "a request type");
   requireValue(["order", "trade"].includes(kind), "Choose a request type.");
-  const email = needed(data, "email", "an email address").toLowerCase();
+  const email = account?.email || needed(data, "email", "an email address").toLowerCase();
   requireValue(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email), "Enter a valid email address.");
   const postcode = needed(data, "postcode", "a postcode").toUpperCase();
   requireValue(/^[A-Z0-9]{5,8}$/.test(db.cleanPostcode(postcode)), "Enter a UK-style delivery postcode.");
@@ -198,7 +198,8 @@ export function intake(draft, data) {
   requireValue(/^[a-f0-9-]{36}$/.test(requestKey), "Reload the page and try again.");
   const duplicate = draft.requests.find((request) => request.requestKey === requestKey);
   if (duplicate) {
-    requireValue(duplicate.email === email && db.cleanPostcode(duplicate.postcode) === db.cleanPostcode(postcode), "Reload the page to submit a new request.");
+    requireValue((duplicate.accountId || null) === (account?.user_id || null) &&
+      duplicate.email === email && db.cleanPostcode(duplicate.postcode) === db.cleanPostcode(postcode), "Reload the page to submit a new request.");
     return duplicate;
   }
   const bottle = kind === "order" ? needed(data, "bottle", "a bottle") : "";
@@ -206,6 +207,7 @@ export function intake(draft, data) {
   const notes = kind === "trade" ? needed(data, "notes", "your requirements") : value(data, "notes");
   const request = {
     id: id(), reference: reference(), requestKey, kind, email, postcode, bottle, quantity, notes,
+    ...(account ? { accountId: account.user_id } : {}),
     name: needed(data, "name", "a name"), address: needed(data, "address", "a delivery address"),
     business: kind === "trade" ? needed(data, "business", "a business name") : "",
     status: "Received", created: db.localDay(), customer: "", orderId: "",

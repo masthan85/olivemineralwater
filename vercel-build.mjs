@@ -1,7 +1,7 @@
 import { cpSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { publicPages, staffPages } from "./http.mjs";
+import { publicPages, staffPages, apiNames } from "./http.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const output = join(root, ".vercel", "output");
@@ -15,7 +15,7 @@ mkdirSync(join(fn, "public", "assets"), { recursive: true });
 cpSync(join(root, "public", "assets"), join(staticDir, "assets"), { recursive: true });
 for (const page of publicPages) cpSync(join(root, "public", page), join(staticDir, page));
 for (const page of staffPages) cpSync(join(root, "public", page), join(fn, "public", page));
-for (const file of ["vercel-handler.mjs", "hosted-storage.mjs", "http.mjs", "domain.mjs", "seed.mjs"]) {
+for (const file of ["vercel-handler.mjs", "hosted-storage.mjs", "http.mjs", "domain.mjs", "seed.mjs", "customer-auth.mjs", "customer-orders.mjs"]) {
   cpSync(join(root, file), join(fn, file));
 }
 cpSync(join(root, "public", "assets", "stock.mjs"), join(fn, "public", "assets", "stock.mjs"));
@@ -31,7 +31,7 @@ json(output, "config.json", {
       "Content-Security-Policy": "default-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
     }, continue: true },
     { src: "^/$", dest: "/index.html" },
-    { src: "^/api/(config|workspace|login|tracking|requests|logout|commands)$", dest: "/olive-api?__olive_route=/api/$1" },
+    { src: `^/api/(${apiNames.join("|")})$`, dest: "/olive-api?__olive_route=/api/$1" },
     { src: `^${staffRoute}$`, dest: "/olive-api?__olive_route=/$1" },
     { handle: "filesystem" },
   ],

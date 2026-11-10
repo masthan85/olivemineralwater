@@ -201,7 +201,7 @@ import { api } from "./platform.js";
         day(item.created), pill(item.status), esc(item.orderId || "—"), button("request", "View", item.id, "compact")],
     }));
     return heading("Customer intake", "Requests inbox", "Review website submissions, link customers and create stock-backed orders.") +
-      search("Search requests", "Name, postcode or reference", ["Received", "Reviewed", "Order created", "Closed"]) +
+      search("Search requests", "Name, postcode or reference", ["Received", "Reviewed", "Order created", "Closed", "Cancelled"]) +
       panel("Website submissions", table(["Request", "Customer", "Received", "Status", "Order", "Details"], rows));
   }
 
