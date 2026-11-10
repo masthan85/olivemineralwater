@@ -107,6 +107,28 @@ claimForm.addEventListener("submit", async (event) => {
   }
 });
 
+// Log in and Sign Up share one passwordless flow: the first sign-in creates the account.
+// The #signup link only changes the wording, so new customers see a sign-up screen.
+function showMode() {
+  const signup = location.hash === "#signup";
+  document.querySelector("#signin-title").textContent = signup ? "Sign up to OLIVE" : "Log in to OLIVE";
+  document.querySelector("#signin-intro").textContent = signup
+    ? "Sign up with the email address you order with. There’s no password to set."
+    : "Use the email address you order with.";
+  document.querySelector("#signin-question").textContent = signup ? "Already have an account?" : "Don’t have an account?";
+  const link = document.querySelector("#signin-switch");
+  link.textContent = signup ? "Log In" : "Sign Up";
+  link.href = signup ? "#login" : "#signup";
+}
+window.addEventListener("hashchange", showMode);
+document.querySelector("#signin-switch").addEventListener("click", (event) => {
+  // Switch in place so the page does not jump.
+  event.preventDefault();
+  window.history.replaceState(null, "", event.currentTarget.getAttribute("href"));
+  showMode();
+});
+showMode();
+
 const emailForm = document.querySelector("#signin-email");
 emailForm.addEventListener("submit", async (event) => {
   event.preventDefault();
