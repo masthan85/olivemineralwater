@@ -77,7 +77,9 @@ async function refresh() {
     orders.replaceChildren();
     document.querySelector("#account-email").textContent = "";
     document.querySelectorAll("[data-provider]").forEach((link) => { link.hidden = !data.providers.includes(link.dataset.provider); });
-    if (!data.providers.length) status.textContent = "Online account sign-in is unavailable right now. Guest order tracking is available.";
+    const available = data.providers.length > 0;
+    document.querySelector("#signin-options").hidden = document.querySelector("#signin-intro").hidden = !available;
+    if (!available) status.textContent = "Online account sign-in is unavailable right now. Guest order tracking is available.";
     return;
   }
   document.querySelector("#account-email").textContent = data.account.email;

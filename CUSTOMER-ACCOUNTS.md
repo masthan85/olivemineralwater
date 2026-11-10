@@ -12,6 +12,16 @@ Use the existing Supabase project and Vercel deployment. The change adds custome
 
 The provider callback and the OLIVE callback are two different URLs. The Google and Microsoft apps redirect to `https://YOUR-PROJECT.supabase.co/auth/v1/callback`. Supabase then redirects to the OLIVE callback from step 2.
 
+## If the sign-in buttons are missing
+
+My Account shows “Online account sign-in is unavailable right now” when the server has no usable sign-in settings. Open **Vercel → Project → Logs** and load the page. The function logs a line starting `Customer sign-in is off` that names the missing setting.
+
+- **`SUPABASE_PUBLISHABLE_KEY` is missing or is the wrong key.** It must be the key that begins with `sb_publishable_`. The older `anon` key that begins with `eyJ` is not accepted.
+- **The variable is not enabled for the environment you are testing.** A variable ticked only for Production is absent from Preview deployments.
+- **The deployment is older than the variable.** Vercel reads environment variables at build time, so redeploy after every change.
+
+Always test on the address in `OLIVE_ORIGIN`, such as `https://oliveminiralwater.vercel.app`. A per-deployment address such as `https://oliveminiralwater-abc123-team.vercel.app` sits behind Vercel Authentication, so customers cannot open it, and sign-in cannot finish there because Supabase returns customers to the `OLIVE_ORIGIN` address. If the API answers `Invalid host`, the address you opened does not match `OLIVE_ORIGIN`.
+
 ## Test after deployment
 
 - Sign in with a Google account and an Outlook.com or Microsoft work account you control. The first sign-in creates the customer identity.

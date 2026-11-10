@@ -15,7 +15,11 @@
 .account-period { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; }
 .account-period select { border: 1px solid #aaa28b; border-radius: 5px; background: #fffdf6; padding: 5px 8px; color: var(--ink); font: inherit; }
 .account-actions { margin-top: 15px; }
-.account-actions .button[hidden] { display: none; }
+.account-actions .button[hidden], #signin-options[hidden] { display: none; }
+.account-provider { gap: 10px; background: #fff; border-color: #aaa28b; color: var(--ink); }
+.account-provider:hover { background: var(--cream); border-color: var(--green); }
+.account-provider svg { flex: none; }
+@media (max-width: 480px) { .account-provider { width: 100%; } }
 .account-order + .account-order { margin-top: 12px; }
 .account-order ul { margin: 10px 0; padding-left: 20px; }
 .account-order h3 { overflow-wrap: anywhere; }

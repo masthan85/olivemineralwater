@@ -16,7 +16,10 @@ export function createVercelHandler(env = process.env, makeStorage = hostedStora
   return async (request, response) => {
     try {
       if (!handler) {
-        const value = env.OLIVE_ORIGIN || (env.VERCEL_URL ? "https://" + env.VERCEL_URL : "");
+        // Without OLIVE_ORIGIN, production answers on the project's public domain. VERCEL_URL is the
+        // per-deployment address, which changes on every deploy and sits behind Vercel Authentication.
+        const host = (env.VERCEL_ENV === "production" && env.VERCEL_PROJECT_PRODUCTION_URL) || env.VERCEL_URL;
+        const value = env.OLIVE_ORIGIN || (host ? "https://" + host : "");
         const origin = new URL(value);
         if (origin.protocol !== "https:" || origin.origin !== value.replace(/\/$/, "")) {
           throw new Error("Set OLIVE_ORIGIN to the public HTTPS URL of this deployment.");

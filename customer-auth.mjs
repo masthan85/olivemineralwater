@@ -18,9 +18,16 @@ const profile = (account) => account ? { email: account.email } : null;
 export function customerAccounts({ origin, env, getStore, fetcher = fetch }) {
   const allowed = new Set(["google", "azure"]);
   const key = env.SUPABASE_PUBLISHABLE_KEY;
-  const providers = key?.startsWith("sb_publishable_") && env.SUPABASE_URL
-    ? [...new Set((env.OLIVE_CUSTOMER_PROVIDERS || "google,azure").split(",").map((part) => part.trim()).filter((part) => allowed.has(part)))]
-    : [];
+  const requested = [...new Set((env.OLIVE_CUSTOMER_PROVIDERS || "google,azure").split(",")
+    .map((part) => part.trim().toLowerCase()).filter((part) => allowed.has(part)))];
+  // Name the missing setting in the function logs. The account page only tells customers that sign-in is unavailable.
+  const missing = [];
+  if (!env.SUPABASE_URL) missing.push("SUPABASE_URL is not set");
+  if (!key) missing.push("SUPABASE_PUBLISHABLE_KEY is not set");
+  else if (!key.startsWith("sb_publishable_")) missing.push("SUPABASE_PUBLISHABLE_KEY must be the Supabase key that begins with sb_publishable_");
+  if (!requested.length) missing.push("OLIVE_CUSTOMER_PROVIDERS must list google, azure or both");
+  if (missing.length) console.warn(`Customer sign-in is off for ${origin.origin}: ${missing.join("; ")}.`);
+  const providers = missing.length ? [] : requested;
   const authUrl = (path) => {
     const host = new URL(env.SUPABASE_URL);
     if (host.protocol !== "https:" || host.username || host.password) throw new Error("Invalid authentication host.");
