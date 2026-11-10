@@ -16,16 +16,16 @@ const redirect = (response, location, cookies = []) => {
 const profile = (account) => account ? { email: account.email } : null;
 
 export function customerAccounts({ origin, env, getStore, fetcher = fetch }) {
-  const allowed = new Set(["google", "azure", "apple"]);
+  const allowed = new Set(["email", "google", "azure", "apple"]);
   const key = env.SUPABASE_PUBLISHABLE_KEY;
-  const requested = [...new Set((env.OLIVE_CUSTOMER_PROVIDERS || "google,azure").split(",")
+  const requested = [...new Set((env.OLIVE_CUSTOMER_PROVIDERS || "email,google,azure").split(",")
     .map((part) => part.trim().toLowerCase()).filter((part) => allowed.has(part)))];
   // Name the missing setting in the function logs. The account page only tells customers that sign-in is unavailable.
   const missing = [];
   if (!env.SUPABASE_URL) missing.push("SUPABASE_URL is not set");
   if (!key) missing.push("SUPABASE_PUBLISHABLE_KEY is not set");
   else if (!key.startsWith("sb_publishable_")) missing.push("SUPABASE_PUBLISHABLE_KEY must be the Supabase key that begins with sb_publishable_");
-  if (!requested.length) missing.push("OLIVE_CUSTOMER_PROVIDERS must list at least one of google, azure and apple");
+  if (!requested.length) missing.push("OLIVE_CUSTOMER_PROVIDERS must list at least one of email, google, azure and apple");
   if (missing.length) console.warn(`Customer sign-in is off for ${origin.origin}: ${missing.join("; ")}.`);
   const providers = missing.length ? [] : requested;
   const authUrl = (path) => {
@@ -53,6 +53,28 @@ export function customerAccounts({ origin, env, getStore, fetcher = fetch }) {
       scopes: "email", code_challenge: createHash("sha256").update(verifier).digest("base64url"), code_challenge_method: "s256",
     });
     return redirect(response, url.href, [cookie(verifierCookie, verifier, 600)]);
+  }
+  // Passwordless email sign-in. Supabase emails a one-time link that returns to the same callback as the
+  // other providers, so the link must be opened in the browser that asked for it.
+  async function emailLink(request, response, data, json) {
+    if (!providers.includes("email")) throw new HttpError(404, "Email sign-in is unavailable.");
+    const email = typeof data.email === "string" ? data.email.trim().toLowerCase() : "";
+    if (email.length > 120 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new HttpError(422, "Enter a valid email address.");
+    await getStore().limit(request, "customer-email", 5, 600000);
+    const verifier = token();
+    try {
+      await auth("otp?" + new URLSearchParams({ redirect_to: origin.origin + "/api/customer-callback" }), {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email, create_user: true,
+          code_challenge: createHash("sha256").update(verifier).digest("base64url"), code_challenge_method: "s256",
+        }),
+      });
+    } catch {
+      throw new HttpError(503, "We couldn’t send the sign-in email. Wait a few minutes and try again.");
+    }
+    response.setHeader("Set-Cookie", cookie(verifierCookie, verifier, 3600));
+    return json(response, 200, { sent: true });
   }
   async function callback(request, response) {
     const clear = cookie(verifierCookie, "", 0);
@@ -94,6 +116,7 @@ export function customerAccounts({ origin, env, getStore, fetcher = fetch }) {
     return json(response, 200, { account: profile(account), csrf: account.csrf, orders: history(state, account) });
   }
   async function post(request, response, path, data, json) {
+    if (path === "/api/customer-email") return emailLink(request, response, data, json);
     if (!["/api/customer-claim", "/api/customer-cancel", "/api/customer-logout"].includes(path)) throw new HttpError(404, "Page not found.");
     const account = await session(request);
     if (!account) throw new HttpError(401, "Sign in to manage your orders.");

@@ -24,8 +24,16 @@
 .account-login { text-align: center; }
 .account-login h1 { font-size: clamp(34px, 5vw, 42px); }
 .account-login p { margin-top: 14px; color: var(--muted); font-size: 15px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.account-email { display: grid; gap: 12px; margin-top: 26px; }
+.account-email input { width: 100%; min-height: 48px; padding: 10px 16px; border: 1px solid #aaa28b; border-radius: 10px; background: #fffdf6; color: var(--ink); font: 16px/1.4 var(--sans); }
+.account-email input::placeholder { color: #6f786c; }
+.account-email .button { width: 100%; min-height: 48px; font-size: 15px; }
+.account-or { display: flex; align-items: center; gap: 14px; margin-top: 22px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+.account-or::before, .account-or::after { content: ""; flex: 1; height: 1px; background: var(--border); }
 .account-providers { display: grid; gap: 12px; margin-top: 26px; }
-.account-providers[hidden], .account-provider[hidden] { display: none; }
+.account-or:not([hidden]) + .account-providers { margin-top: 22px; }
+.account-providers[hidden], .account-provider[hidden], .account-email[hidden], .account-or[hidden] { display: none; }
 .account-provider { gap: 10px; width: 100%; min-height: 48px; background: #fffdf6; border-color: #aaa28b; color: var(--ink); font-size: 15px; }
 .account-provider:hover { background: #fff; border-color: var(--green); }
 .account-provider svg { flex: none; }

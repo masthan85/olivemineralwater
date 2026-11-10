@@ -72,7 +72,7 @@ const mime = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=u
 export const publicPages = new Set(["index.html", "about.html", "delivery.html", "products.html", "track.html", "order.html", "trade-enquiry.html", "login.html", "account.html"]);
 export const staffPages = new Set(["operations.html", ...["assets", "customers", "deliveries", "orders", "reports", "requests", "traceability", "warehouse"].map((name) => `ops-${name}.html`)]);
 export const apiNames = ["config", "workspace", "login", "tracking", "requests", "logout", "commands",
-  "customer", "customer-profile", "customer-google", "customer-azure", "customer-apple", "customer-callback", "customer-claim", "customer-cancel", "customer-logout"];
+  "customer", "customer-profile", "customer-google", "customer-azure", "customer-apple", "customer-email", "customer-callback", "customer-claim", "customer-cancel", "customer-logout"];
 export function createHandler({ origin, demo = false, storage, limit, customers, route = (request) => new URL(request.url, origin).pathname }) {
   const secure = origin.protocol === "https:";
   const cookieName = secure ? "__Host-olive_staff" : "olive_staff";

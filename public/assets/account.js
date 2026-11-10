@@ -80,6 +80,9 @@ async function refresh() {
     document.querySelectorAll("[data-provider]").forEach((link) => { link.hidden = !data.providers.includes(link.dataset.provider); });
     const available = data.providers.length > 0;
     for (const id of ["#signin-options", "#signin-intro", "#signin-note"]) document.querySelector(id).hidden = !available;
+    const social = data.providers.some((name) => name !== "email");
+    document.querySelector("#signin-options").hidden = !social;
+    document.querySelector("#signin-or").hidden = !social || !data.providers.includes("email");
     if (!available) status.textContent = "Online account sign-in is unavailable right now. Guest order tracking is available.";
     return;
   }
@@ -97,6 +100,24 @@ claimForm.addEventListener("submit", async (event) => {
     claimForm.reset();
     await refresh();
     status.textContent = "The order is now linked to your account.";
+  } catch (error) {
+    status.textContent = error.message;
+  } finally {
+    button.disabled = false;
+  }
+});
+
+const emailForm = document.querySelector("#signin-email");
+emailForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = emailForm.querySelector("button");
+  const address = emailForm.elements.namedItem("email").value.trim();
+  button.disabled = true;
+  status.textContent = "Sending your sign-in link…";
+  try {
+    await api("/api/customer-email", { email: address });
+    emailForm.reset();
+    status.textContent = `Check your inbox. We’ve sent a sign-in link to ${address}. Open it in this browser within an hour.`;
   } catch (error) {
     status.textContent = error.message;
   } finally {
