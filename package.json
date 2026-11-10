@@ -1,0 +1,10 @@
+{
+  "name": "olive-operations",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24.14.0" },
+  "scripts": {
+    "demo": "node server.mjs --demo",
+    "start": "node server.mjs"
+  }
+}

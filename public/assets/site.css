@@ -1,0 +1,220 @@
+:root {
+  --cream: #f6f3e9;
+  --sand: #e9e4d3;
+  --green: #184232;
+  --gold: #c9a326;
+  --gold-text: #856811;
+  --ink: #202b22;
+  --muted: #555f51;
+  --border: #dcd3b6;
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Jost", "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--cream); color: var(--ink); font: 16px/1.65 var(--sans); }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 500; line-height: 1.12; }
+h1 { font-size: clamp(42px, 5vw, 64px); }
+h2 { font-size: clamp(31px, 3.1vw, 36px); letter-spacing: -.02em; }
+h3 { font-size: 22px; }
+p { margin: 0; }
+p + p { margin-top: 1.25rem; }
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 5px; }
+.wrap { width: min(1120px, calc(100% - 56px)); margin-inline: auto; }
+.skip { position: fixed; top: 8px; left: 8px; padding: 10px 16px; background: var(--cream); z-index: 5; transform: translateY(-150%); }
+.skip:focus { transform: none; }
+.site-header {
+  position: sticky;
+  z-index: 3;
+  top: 0;
+  background: var(--green);
+  color: white;
+  box-shadow: 0 4px 15px #121d1a18;
+}
+.home .site-header { margin-bottom: -82px; }
+.home .site-header:not(.is-solid):not(.menu-open) { background: transparent; box-shadow: none; }
+.nav-wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 82px; }
+.brand { display: inline-block; flex: none; }
+.logo { width: 166px; height: auto; }
+.primary-nav { display: flex; align-items: center; gap: clamp(18px, 2.3vw, 34px); font-size: 14px; font-weight: 600; }
+.primary-nav a { text-decoration: none; }
+.primary-nav a[aria-current], .primary-nav a:hover { color: #edc852; }
+.home .site-header:not(.is-solid) a[aria-current] { color: white; }
+.menu-toggle { display: none; }
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 27px;
+  border: 1px solid transparent;
+  border-radius: 100px;
+  font: 600 14px/1.3 var(--sans);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.button--gold { background: var(--gold); color: #182718; }
+.button--gold:hover { background: #e2bd49; }
+.button--green { background: var(--green); color: white; }
+.button--green:hover { background: #255941; }
+.button:disabled { opacity: .6; cursor: default; }
+.button--line { color: #edc852; border-color: #c9a326; min-height: 37px; padding-inline: 20px; }
+.button--outline { color: white; border-color: #ffffff80; }
+.button--line:hover, .button--outline:hover { background: #ffffff1f; }
+.hero {
+  display: grid;
+  align-items: center;
+  min-height: clamp(680px, 53vw, 810px);
+  padding: 124px 0 60px;
+  background: linear-gradient(180deg, #0c1524ad, #0e1d2b54 51%, #0e1d2b99), url("mountain-water.jpg") center center / cover;
+  color: #fffdf8;
+}
+.hero h1 { font-size: clamp(52px, 4.4vw, 64px); max-width: 690px; line-height: 1.02; }
+.kicker {
+  margin: 0 0 10px;
+  color: var(--gold-text);
+  font: 500 12px/1.4 var(--sans);
+  letter-spacing: .31em;
+  text-transform: uppercase;
+}
+.kicker::before { content: ""; display: block; width: 64px; height: 1px; background: var(--gold); margin-bottom: 22px; }
+.hero .kicker, .range .kicker, .action-card--trade .kicker { color: #e6bf4e; }
+.hero .kicker { margin-bottom: 18px; }
+.hero .kicker::before, .action-card .kicker::before { display: none; }
+.tagline { margin-top: 14px; font: italic 500 26px/1.3 var(--serif); }
+.hero-copy { margin-top: 24px; max-width: 530px; }
+.hero-buttons { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 31px; }
+.section { padding: 60px 0; }
+.story { display: grid; grid-template-columns: 2fr 3fr; gap: 52px; }
+.story > div + div { padding-top: 8px; color: var(--muted); }
+.collection { background: var(--sand); }
+.section-intro { max-width: 590px; margin-top: 13px; color: var(--muted); }
+.bottle-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin-top: 33px; }
+.bottle-card { background: var(--cream); border: 1px solid var(--border); border-radius: 9px; overflow: hidden; }
+.bottle-card img { width: 100%; aspect-ratio: 8 / 9; object-fit: cover; }
+.bottle-info { padding: 22px 23px; min-height: 150px; }
+.bottle-title { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 8px; }
+.bottle-title h3 { font-size: 21px; }
+.bottle-title span { color: var(--gold-text); font: 600 13px var(--sans); white-space: nowrap; }
+.bottle-info p { margin-top: 8px; color: var(--muted); font-size: 14px; }
+.text-link { display: inline-block; margin-top: 28px; font-size: 14px; font-weight: 600; text-underline-offset: .35em; text-decoration-color: var(--gold-text); }
+.text-link:hover { color: var(--gold-text); }
+.bottle-info .text-link { margin-top: 13px; }
+.range {
+  display: grid;
+  align-items: center;
+  min-height: 318px;
+  padding: 45px 0;
+  color: white;
+  background: linear-gradient(90deg, #0a1427df, #101a2c85 65%, #101a2c39), url("mountain-water.jpg") center 49% / cover;
+}
+.range p:not(.kicker) { max-width: 535px; margin-top: 13px; }
+.range .button { margin-top: 22px; }
+.features { border-bottom: 1px solid var(--border); padding: 49px 0; text-align: center; }
+.feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.feature-grid h3 { font-size: 20px; }
+.feature-grid p { margin-top: 6px; color: var(--muted); font-size: 14px; }
+.action-grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: 24px; }
+.action-card { padding: clamp(26px, 3.8vw, 48px); border: 1px solid var(--border); border-radius: 8px; }
+.action-card--trade { background: var(--green); border-color: var(--green); color: white; }
+.action-card h2 { font-size: clamp(26px, 2.5vw, 29px); }
+.action-card p:not(.kicker) { margin-top: 16px; color: var(--muted); max-width: 455px; }
+.action-card--trade p:not(.kicker) { color: #e7ede6; }
+.action-card .button { margin-top: 29px; }
+.site-footer { padding: 63px 0 24px; background: var(--green); color: #e1e8df; font-size: 14px; }
+.footer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.footer-grid h2 { color: #e4be55; font-size: 20px; margin: 5px 0 15px; }
+.footer-grid nav a { display: block; width: fit-content; }
+.footer-grid a:not(.brand) { text-decoration: none; }
+.footer-grid a:hover { text-decoration: underline; }
+.footer-grid p, .footer-grid a + a { margin-top: 8px; }
+.footer-grid .brand + p { margin-top: 13px; }
+.copyright { margin-top: 58px; padding-top: 20px; border-top: 1px solid #ffffff25; font-size: 12px; }
+.inner { padding-block: 78px; }
+.about-photo { width: 100%; height: clamp(290px, 42vw, 560px); object-fit: cover; }
+.request-layout { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(28px, 5vw, 72px); }
+.request-layout h1 { font-size: clamp(38px, 4.5vw, 62px); }
+.request-layout h1 + p { margin-top: 18px; color: var(--muted); }
+.request-layout .text-link { margin: 0; overflow-wrap: anywhere; }
+.request-form { padding: clamp(20px, 3vw, 38px); background: var(--sand); border: 1px solid var(--border); border-radius: 9px; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px; margin-bottom: 17px; }
+.request-form label { display: grid; gap: 5px; font-weight: 600; font-size: 14px; }
+.request-form input, .request-form select, .request-form textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #aaa28b;
+  border-radius: 5px;
+  background: var(--cream);
+  color: var(--ink);
+  font: 16px/1.45 var(--sans);
+}
+.request-form textarea { resize: vertical; }
+.form-note { margin: 16px 0; font-size: 14px; color: var(--muted); }
+.staff-link { display: inline-block; margin-top: 12px; color: #e4be55; }
+.help-list details { padding: 14px 0; border-bottom: 1px solid var(--border); }
+.help-list summary { cursor: pointer; font-weight: 600; }
+.help-list details p { margin-top: 8px; color: var(--muted); }
+#tracking-result:not(:empty) { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); }
+#tracking-result h2 { font-size: 27px; }
+#tracking-result p { margin-top: 7px; }
+#intake-status { overflow-wrap: anywhere; }
+#login-form label + label { margin-top: 12px; }
+@media (max-width: 950px) {
+  .bottle-grid { gap: 16px; }
+  .bottle-info { padding: 16px; }
+}
+@media (max-width: 860px) {
+  .wrap { width: calc(100% - 40px); }
+  .nav-wrap { min-height: 66px; }
+  .home .site-header { margin-bottom: -66px; }
+  .logo { width: 137px; }
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 42px;
+    padding: 6px 13px;
+    border: 1px solid #ffffff80;
+    border-radius: 100px;
+    background: transparent;
+    color: white;
+    font: 600 14px var(--sans);
+    cursor: pointer;
+  }
+  .primary-nav { display: none; position: absolute; inset: 100% 0 auto; padding: 12px 20px 20px; background: var(--green); }
+  .menu-open .primary-nav { display: grid; gap: 4px; }
+  .primary-nav a { display: block; padding: 10px 8px; }
+  .primary-nav .button { width: fit-content; padding-inline: 16px; margin-top: 5px; }
+  .hero { min-height: 680px; align-items: end; padding-bottom: 65px; background-position: 51% center; background-image: linear-gradient(180deg, #0c152485, #10192435 32%, #0a172bd9 88%), url("mountain-water.jpg"); }
+  .hero h1 { font-size: clamp(40px, 9vw, 58px); }
+  .hero h1 br { display: none; }
+  .tagline { font-size: 22px; }
+  .hero-copy { margin-top: 16px; }
+  .hero-buttons { margin-top: 21px; }
+  .section { padding-block: 46px; }
+  .story, .action-grid, .request-layout { grid-template-columns: 1fr; gap: 22px; }
+  .story > div + div { padding-top: 0; }
+  .bottle-grid, .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bottle-grid { margin-top: 23px; }
+  .bottle-info { min-height: 0; }
+  .range { min-height: 300px; }
+  .features { padding-block: 35px; }
+  .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 18px; }
+  .footer-grid > :first-child { grid-column: 1 / -1; }
+  .footer-grid a { overflow-wrap: anywhere; }
+  .site-footer { padding-top: 43px; }
+  .copyright { margin-top: 32px; }
+}
+@media (max-width: 380px) {
+  .wrap { width: calc(100% - 32px); }
+  .hero-buttons { gap: 8px; }
+  .hero-buttons .button { padding-inline: 19px; }
+  .bottle-grid { gap: 10px; }
+  .bottle-info { padding: 12px; }
+  .bottle-title h3 { font-size: 18px; }
+  .form-grid { grid-template-columns: 1fr; }
+}

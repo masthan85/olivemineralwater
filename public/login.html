@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Staff sign-in | OLIVE</title>
+  <link rel="stylesheet" href="assets/site.css">
+  <script type="module" src="assets/login.js"></script>
+</head>
+<body>
+  <header class="site-header"><div class="wrap nav-wrap"><a href="index.html"><img class="logo" src="assets/olive-logo.png" width="1311" height="389" alt="OLIVE"></a></div></header>
+  <main class="section inner">
+    <div class="wrap request-layout">
+      <div><p class="kicker">OLIVE Operations</p><h1>Staff sign-in</h1><p>Open the workspace to manage customer requests, stock and deliveries.</p><p><a href="index.html">Back to the public site</a></p></div>
+      <form class="request-form" id="login-form" method="post">
+        <label>Email <input name="email" type="email" autocomplete="username" maxlength="120" required></label>
+        <label>Password <input name="password" type="password" autocomplete="current-password" maxlength="256" required></label>
+        <p id="login-demo" class="form-note" hidden>Demo account <strong>demo@olive.test</strong> · Password <strong>olive-local-preview-2026</strong></p>
+        <p id="login-status" class="form-note" role="status"></p>
+        <button class="button button--green" type="submit" disabled>Sign in</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>
