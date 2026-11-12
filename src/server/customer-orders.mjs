@@ -1,5 +1,5 @@
 import { DomainError, progress } from "./domain.mjs";
-import { cleanPostcode } from "./public/assets/stock.mjs";
+import { cleanPostcode } from "../../public/assets/stock.mjs";
 
 const bottleNames = new Map([
   ["ST-250", "OLIVE Still Water (250ml)"], ["ST-500", "OLIVE Still Water (500ml)"],

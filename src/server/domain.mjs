@@ -1,5 +1,5 @@
 import { randomBytes, randomUUID } from "node:crypto";
-import * as db from "./public/assets/stock.mjs";
+import * as db from "../../public/assets/stock.mjs";
 
 export class DomainError extends Error {}
 const find = (records, id) => records.find((item) => item.id === id);

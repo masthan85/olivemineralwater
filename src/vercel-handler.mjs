@@ -1,6 +1,6 @@
-import { createHandler, staffPages, apiNames } from "./http.mjs";
-import { hostedStorage } from "./hosted-storage.mjs";
-import { customerAccounts } from "./customer-auth.mjs";
+import { createHandler, staffPages, apiNames } from "./server/http.mjs";
+import { hostedStorage } from "./server/hosted-storage.mjs";
+import { customerAccounts } from "./server/customer-auth.mjs";
 
 const apiPaths = new Set(apiNames.map((name) => "/api/" + name));
 function route(request) {

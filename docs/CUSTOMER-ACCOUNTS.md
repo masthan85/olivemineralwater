@@ -2,7 +2,7 @@
 
 Use the existing Supabase project and Vercel deployment. The change adds customer sign-in and leaves guest ordering, guest tracking, and staff sign-in available.
 
-1. Open **Supabase → SQL Editor** and run [customer-accounts.sql](customer-accounts.sql). This adds a customer-session table without replacing existing order records. On a brand-new database, run [supabase.sql](supabase.sql) first.
+1. Open **Supabase → SQL Editor** and run [customer-accounts.sql](../database/customer-accounts.sql). This adds a customer-session table without replacing existing order records. On a brand-new database, run [supabase.sql](../database/supabase.sql) first.
 2. Under **Authentication → URL Configuration**, set **Site URL** to `https://www.olivemineralwater.co.uk` once Vercel verifies the domain. Add the exact redirect URL `https://www.olivemineralwater.co.uk/api/customer-callback`. Until the DNS switch, use `https://oliveminiralwater.vercel.app` and its matching callback. Vercel’s Production `OLIVE_ORIGIN` must match the Site URL you are using.
 3. Set up the providers you want in **Supabase → Authentication → Sign In / Providers**.
    - **Google**. Create a Google OAuth **Web application**, add the Supabase provider callback shown in the dashboard as an authorized redirect URI, then enter its client ID and secret in Supabase. For public use, make the Google app available to external users and publish it after testing. [Supabase Google setup](https://supabase.com/docs/guides/auth/social-sign-in/auth-google)

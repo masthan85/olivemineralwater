@@ -2,10 +2,13 @@
   "name": "olive-operations",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=24.14.0" },
+  "engines": {
+    "node": ">=24.14.0"
+  },
   "scripts": {
-    "build": "node vercel-build.mjs",
-    "demo": "node server.mjs --demo",
-    "start": "node server.mjs"
+    "build": "node scripts/vercel-build.mjs",
+    "demo": "node src/server.mjs --demo",
+    "start": "node src/server.mjs",
+    "test": "node --test tests/"
   }
 }

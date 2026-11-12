@@ -1,4 +1,4 @@
-import { localDay } from "./public/assets/stock.mjs";
+import { localDay } from "../../public/assets/stock.mjs";
 const seed = () => ({
     nextOrder: 1045,
     products: [

@@ -5,12 +5,12 @@ The public website is served as static files. Vercel runs the staff pages and AP
 ## Set up the database
 
 1. Create a Supabase project for OLIVE.
-2. Open **SQL Editor → New query**. Paste the full contents of [supabase.sql](supabase.sql) and run it.
+2. Open **SQL Editor → New query**. Paste the full contents of [supabase.sql](../database/supabase.sql) and run it.
 3. Copy your **Project URL** and a **Secret key** from the Supabase project. The key begins with `sb_secret_`. Keep it in Vercel’s server environment variables.
 
 ## Update GitHub and Vercel
 
-1. Extract the replacement ZIP and copy its contents into the existing repository folder. Keep `vercel.json`, `package.json`, and `vercel-build.mjs` together at the configured root. Commit and push to the connected branch.
+1. Extract the replacement ZIP and copy its contents into the existing repository folder. Keep the folder layout as it is: `vercel.json` and `package.json` stay at the configured root, with `scripts/`, `src/` and `public/` beside them. Commit and push to the connected branch.
 2. In **Vercel → Project → Settings → Build and Deployment**, use **Other** as the framework and turn off any previous Build Command and Output Directory overrides. The included configuration runs `npm run build`. Use Node.js 24 for the build if you need to select a version. If the files are in a subfolder, select that folder as the Root Directory.
 3. In **Settings → Environment Variables**, add these values for **Production**.
 

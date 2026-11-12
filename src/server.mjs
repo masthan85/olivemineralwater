@@ -3,8 +3,8 @@ import { randomBytes } from "node:crypto";
 import { mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import { seed } from "./seed.mjs";
-import { createHandler, derive, HttpError } from "./http.mjs";
+import { seed } from "./server/seed.mjs";
+import { createHandler, derive, HttpError } from "./server/http.mjs";
 
 const demo = process.argv.includes("--demo");
 const port = Number(process.env.OLIVE_PORT || (demo ? 8766 : 8080));

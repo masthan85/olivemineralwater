@@ -4,11 +4,12 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve, basename, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as domain from "./domain.mjs";
-import { cleanPostcode } from "./public/assets/stock.mjs";
+import { cleanPostcode } from "../../public/assets/stock.mjs";
 
 const hashPassword = promisify(scrypt);
 export const derive = (password, salt) => hashPassword(password, salt, 64, { N: 32768, r: 8, p: 3, maxmem: 64 * 1024 * 1024 });
-const directory = dirname(fileURLToPath(import.meta.url));
+// Project root: this file lives in src/server.
+const directory = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 export class HttpError extends Error {
   constructor(status, message) {

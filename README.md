@@ -1,8 +1,24 @@
 # OLIVE Distribution Platform
 
-For the hosted setup, follow the [Vercel deployment guide](VERCEL.md).
+For the hosted setup, follow the [Vercel deployment guide](docs/VERCEL.md).
 
 The public OLIVE website and staff workspace run from the same Node.js service. Customers submit order requests and trade enquiries. Staff review requests, link customers, reserve batches, dispatch orders and record delivery outcomes. Customers can check their status with a tracking reference and postcode.
+
+## Repository layout
+
+| Path | What it holds |
+|---|---|
+| `public/` | The website as served: public pages, staff pages and their `assets/`. `assets/stock.mjs` is shared with the server. |
+| `src/server.mjs` | Entry point for running locally or on your own host (SQLite). |
+| `src/vercel-handler.mjs` | Entry point for the Vercel function (Supabase). |
+| `src/server/` | The application: HTTP routing, business rules, customer accounts, hosted storage and seed data. |
+| `scripts/` | Build tooling: `vercel-build.mjs` for Vercel and `build-wordpress-site.py` for the WordPress.com copy. |
+| `database/` | SQL to set up Supabase. |
+| `tests/` | Automated tests. Run them with `npm test`. |
+| `docs/` | Guides: [Vercel deployment](docs/VERCEL.md), [customer accounts](docs/CUSTOMER-ACCOUNTS.md) and [WordPress.com](docs/WORDPRESS.md). |
+| `wordpress-site/` | Generated static copy of the public pages for WordPress.com import. |
+| `archive/static-preview/` | The original static preview of the site. Nothing builds or serves it. |
+| `.github/workflows/` | CI: the Vercel build check and the Fortify scan. |
 
 ## Run the local demo
 
@@ -28,8 +44,8 @@ Set `OLIVE_ADMIN_EMAIL` and `OLIVE_ADMIN_PASSWORD` in the environment before the
 
 Set `OLIVE_DATA` to a private, persistent SQLite path if the default `data/olive.sqlite` is unsuitable. Keep the demo and operational database separate.
 
-To reset an existing staff password, set the account email and new password in the same environment variables and run `node server.mjs --reset-password` against the operational database. This revokes the account’s existing sessions.
+To reset an existing staff password, set the account email and new password in the same environment variables and run `node src/server.mjs --reset-password` against the operational database. This revokes the account’s existing sessions.
 
 For hosted access, set `OLIVE_ORIGIN` to the exact public HTTPS origin and optionally set `OLIVE_PORT` for the internal port. Run behind a TLS reverse proxy that preserves the public Host header and connects to the loopback listener. Use a single service instance and persistent storage. Configure backups and test restoration before accepting real records. Apply per-client limits at the reverse proxy because the application sees the proxy’s socket address. Review staff permissions, data retention and privacy copy before launch. All staff accounts currently have the same workspace access.
 
-This package requires a Node.js host for the API and database. A static GitHub Pages deployment can serve the original static preview, while a GitHub repository can store this application’s source.
+This package requires a Node.js host for the API and database. A static GitHub Pages deployment can serve the original static preview kept in `archive/static-preview/`, while a GitHub repository can store this application’s source.

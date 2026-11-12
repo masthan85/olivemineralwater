@@ -1,6 +1,6 @@
 # OLIVE on WordPress.com
 
-The public pages are being moved to WordPress.com, where the shop will run on WooCommerce. This file explains the two things in this repository that belong to that move.
+The public pages are being moved to WordPress.com, where the shop will run on WooCommerce. This file explains the two things in this repository that belong to that move. Paths are relative to the repository root.
 
 ## `wordpress-site/`
 
