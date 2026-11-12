@@ -17,7 +17,6 @@ The public OLIVE website and staff workspace run from the same Node.js service. 
 | `tests/` | Automated tests. Run them with `npm test`. |
 | `docs/` | Guides: [Vercel deployment](docs/VERCEL.md), [customer accounts](docs/CUSTOMER-ACCOUNTS.md) and [WordPress.com](docs/WORDPRESS.md). |
 | `wordpress-site/` | Generated static copy of the public pages for WordPress.com import. |
-| `archive/static-preview/` | The original static preview of the site. Nothing builds or serves it. |
 | `.github/workflows/` | CI: the Vercel build check and the Fortify scan. |
 
 ## Run the local demo
@@ -48,4 +47,4 @@ To reset an existing staff password, set the account email and new password in t
 
 For hosted access, set `OLIVE_ORIGIN` to the exact public HTTPS origin and optionally set `OLIVE_PORT` for the internal port. Run behind a TLS reverse proxy that preserves the public Host header and connects to the loopback listener. Use a single service instance and persistent storage. Configure backups and test restoration before accepting real records. Apply per-client limits at the reverse proxy because the application sees the proxy’s socket address. Review staff permissions, data retention and privacy copy before launch. All staff accounts currently have the same workspace access.
 
-This package requires a Node.js host for the API and database. A static GitHub Pages deployment can serve the original static preview kept in `archive/static-preview/`, while a GitHub repository can store this application’s source.
+This package requires a Node.js host for the API and database. A static host such as GitHub Pages cannot run it.
