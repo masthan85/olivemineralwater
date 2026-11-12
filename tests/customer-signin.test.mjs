@@ -41,7 +41,7 @@ function makeWorld(envExtra) {
     }
     if (url.pathname === "/auth/v1/otp") {
       const body = JSON.parse(options.body);
-      assert.equal(url.searchParams.get("redirect_to"), "https://oliveminiralwater.vercel.app/api/customer-callback");
+      assert.equal(url.searchParams.get("redirect_to"), "https://olivemineralwater.vercel.app/api/customer-callback");
       assert.equal(body.create_user, true);
       if (body.email === "bounce@example.com") return { ok: false, json: async () => ({}) };
       const code = "mail-" + codes.size;
@@ -78,7 +78,7 @@ function makeWorld(envExtra) {
 
 const check = (name, fn) => test(name, fn);
 
-const PROD = "oliveminiralwater.vercel.app";
+const PROD = "olivemineralwater.vercel.app";
 const fullBase = { OLIVE_ORIGIN: "https://" + PROD, SUPABASE_PUBLISHABLE_KEY: "sb_publishable_test" };
 
 async function signIn(world, provider, email, cookies) {
