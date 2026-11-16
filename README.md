@@ -12,11 +12,11 @@ The public OLIVE website and staff workspace run from the same Node.js service. 
 | `src/server.mjs` | Entry point for running locally or on your own host (SQLite). |
 | `src/vercel-handler.mjs` | Entry point for the Vercel function (Supabase). |
 | `src/server/` | The application: HTTP routing, business rules, customer accounts, hosted storage and seed data. |
-| `scripts/` | Build tooling: `vercel-build.mjs` for Vercel and `build-wordpress-site.py` for the WordPress.com copy. |
+| `scripts/` | Build tooling: `vercel-build.mjs` for Vercel. |
 | `database/` | SQL to set up Supabase. |
 | `tests/` | Automated tests. Run them with `npm test`. |
 | `docs/` | Guides: [Vercel deployment](docs/VERCEL.md), [customer accounts](docs/CUSTOMER-ACCOUNTS.md) and [WordPress.com](docs/WORDPRESS.md). |
-| `wordpress-site/` | Generated static copy of the public pages for WordPress.com import. |
+| `wordpress/` | Styles for the WordPress.com shop. See [docs/WORDPRESS.md](docs/WORDPRESS.md). |
 | `.github/workflows/` | CI: the Vercel build check and the Fortify scan. |
 
 ## Run the local demo

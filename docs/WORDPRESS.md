@@ -1,30 +1,59 @@
 # OLIVE on WordPress.com
 
-The public pages are being moved to WordPress.com, where the shop will run on WooCommerce. This file explains the two things in this repository that belong to that move. Paths are relative to the repository root.
+The public site and shop are moving to WordPress.com. WooCommerce runs the shop, on the MySQL database that WordPress.com provides. This file records what is set up and what is still open.
 
-## `wordpress-site/`
+- Design: [superpowers/specs/2026-11-16-wordpress-shop-design.md](superpowers/specs/2026-11-16-wordpress-shop-design.md)
+- Build plan: [superpowers/plans/2026-11-16-wordpress-shop.md](superpowers/plans/2026-11-16-wordpress-shop.md)
 
-A static copy of the public pages, prepared for WordPress.com's site import: Home, Products, Shop, Trade Enquiry, About, and Delivery & Help, with the stylesheet, script, logo and photos. It was imported to build the WordPress.com preview site.
+## The site
 
-It differs from `public/` in these ways:
+| | |
+|---|---|
+| Site | "OLIVE Pure Mineral Water", blog ID `258624640` |
+| Address for now | `shiny-moon-cherryblossom.wpcomstaging.com` |
+| State | Coming Soon (not public), free plan |
+| Admin | `https://shiny-moon-cherryblossom.wpcomstaging.com/wp-admin/` |
 
-- The menus drop Track Order, My Account and Staff sign-in, which belong to the custom Node.js system. WooCommerce provides its own account and order pages.
-- **Shop** is a holding page with an “Email your order” button. WooCommerce replaces it once the site is on a paid plan.
-- The Trade Enquiry form has no script behind it. WordPress.com converts it to its own contact form on import.
-- A few extra CSS rules at the end of `assets/site.css` size the logo and photos, because the import wraps each image in a `figure`.
+The account's other two sites, `quality-detective-king.wordpress.com` and `olivemineralwater.wordpress.com`, are empty placeholders and are not used.
 
-Do not edit `wordpress-site/` by hand. It is generated, and the next build replaces it.
+## What is set up (as of 2026-11-16)
 
-## `scripts/build-wordpress-site.py`
+- **Pages:** Home, Products, Trade Enquiry, About, Delivery & Help, imported from the static copy that used to live in `wordpress-site/`.
+- **WooCommerce 11.3:** installed and active. It owns Shop (`/shop/`), Basket, Checkout and My account.
+- **Catalogue:** two categories, Signature Glass and Still Water, and seven published products with photos and descriptions.
+- **Menus:** header is Home, Shop, Trade Enquiry, About, Delivery & Help, My Account, Basket. The Products page is still published but no longer in the menus.
+- **Shop styling:** [`wordpress/olive-shop.css`](../wordpress/olive-shop.css), applied as the site's Additional CSS.
 
-Regenerates `wordpress-site/` from `public/`. It needs Python 3 and nothing else.
+## What is not set up yet
 
-```sh
-python scripts/build-wordpress-site.py public wordpress-site
-```
+These need the WordPress admin screens, and most need figures from the client. On 2026-11-16 the shop still showed US dollars and no prices, so none of them had been done on this site.
 
-After a rebuild, zip the contents of `wordpress-site/` with `index.html` at the top level and import the ZIP into the same WordPress.com preview site. A re-import replaces the preview’s pages, including any edits made on it in the WordPress editor, so once you start editing in WordPress, stop re-importing.
+1. Country, currency (GBP) and VAT-inclusive prices.
+2. A price and stock count for each product. Until a product has a price it shows "Read more" and cannot be bought.
+3. The delivery area and delivery charge.
+4. A card payment provider, tested in test mode first.
+5. Guest checkout and account settings.
+6. Policy pages: delivery, returns, privacy and terms. WooCommerce left a draft "Refund and Returns Policy" page to start from.
+7. A paid plan (needed for the custom domain), the domain itself, and launch.
+
+The step-by-step clicks for 1 to 5 are in the build plan, Tasks 1, 2, 5 and 6.
+
+## Changing the shop's look
+
+1. Edit `wordpress/olive-shop.css`. It is written phone first: the base rules are for a 375px screen and the wider layouts are added at the bottom.
+2. Copy the whole file into **Appearance → Editor → Styles → Additional CSS** on the site, replacing what is there.
+3. Check Shop, a product, Basket, Checkout and My account at phone, tablet and desktop widths.
+
+Three things about this theme that the CSS relies on:
+
+- The Shop page puts its content in `main`. Product pages nest `main` inside a `.woocommerce` wrapper. Basket, Checkout and My account are ordinary pages whose content sits in `.entry-content`.
+- Product photos are forced to `object-fit: contain`, so bottles are shown whole.
+- On phones, the add-to-basket form on a product page is fixed to the bottom of the screen. This has not been seen working yet, because no product has a price.
+
+## Do not re-import the static copy
+
+The pages were first created by importing a static copy of `public/`. That copy and its build script have been removed from the repository, because importing again would replace the pages and everything edited in WordPress since.
 
 ## What does not move
 
-The staff workspace, order tracking and customer sign-in in this repository are a Node.js application. WordPress cannot run them. They keep working on Vercel and Supabase until the WooCommerce shop replaces them.
+The staff workspace, order tracking and customer sign-in in `src/` are a Node.js application that WordPress cannot run. They stay on Vercel and Supabase until the WooCommerce shop is live, and are then retired. The code remains in this repository's history.
