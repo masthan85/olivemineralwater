@@ -1,59 +1,37 @@
 # OLIVE on WordPress.com
 
-The public site and shop are moving to WordPress.com. WooCommerce runs the shop, on the MySQL database that WordPress.com provides. This file records what is set up and what is still open.
+## The sites
 
-- Design: [superpowers/specs/2026-11-16-wordpress-shop-design.md](superpowers/specs/2026-11-16-wordpress-shop-design.md)
-- Build plan: [superpowers/plans/2026-11-16-wordpress-shop.md](superpowers/plans/2026-11-16-wordpress-shop.md)
+| Site | Address | Blog ID | Plan | Use |
+|---|---|---|---|---|
+| Live | `olivemineralwater.co.uk` | `258777266` | Premium | The public website |
+| Preview | `shiny-moon-cherryblossom.wpcomstaging.com` | `258624640` | Free | Where the WooCommerce shop was first built and tested |
 
-## The site
+The live site was built by importing the previous Vercel site, so its theme (`olivemineralwater-co-uk`) and page layouts come from that import. Edit pages in the WordPress editor.
 
-| | |
+## What the OLIVE Site plugin does
+
+- Loads `assets/css/site-fixes.css`. The import wraps images in figures that do not take part in layout, which left the header logo at its full 1311px width. These rules size the logo and photos directly.
+- Loads `assets/css/shop.css` once WooCommerce is installed.
+- Redirects the previous site's `.html` addresses and the import's duplicate pages. See the README for the list.
+
+## Pages on the live site (as of 2026-11-19)
+
+| Page | How it works |
 |---|---|
-| Site | "OLIVE Pure Mineral Water", blog ID `258624640` |
-| Address for now | `shiny-moon-cherryblossom.wpcomstaging.com` |
-| State | Coming Soon (not public), free plan |
-| Admin | `https://shiny-moon-cherryblossom.wpcomstaging.com/wp-admin/` |
+| Home, Products, About, Delivery & Help | Content pages. |
+| Order | A Jetpack form. Each request is emailed to the site's admin email and kept under **Feedback** in wp-admin. |
+| Trade Enquiry | A Jetpack form, as above. |
+| Track Order | A Jetpack form asking for the order reference, postcode and email. The team replies by email. There is no automatic lookup. |
+| My Account | Explains that online accounts come with the online shop, with links to Order and Track Order. |
+| Staff sign-in | The WordPress login. Staff use their WordPress.com account. |
+| `order-query-1` to `-4`, `account-query-1` | Duplicates left by the import. The plugin redirects them; they can be moved to the bin once the plugin is active. |
 
-The account's other two sites, `quality-detective-king.wordpress.com` and `olivemineralwater.wordpress.com`, are empty placeholders and are not used.
+Form emails go to the site's admin email. To send them to `hello@olivemineralwater.co.uk` instead, set that address in each form's settings in the editor once the mailbox exists.
 
-## What is set up (as of 2026-11-16)
+## Still to do
 
-- **Pages:** Home, Products, Trade Enquiry, About, Delivery & Help, imported from the static copy that used to live in `wordpress-site/`.
-- **WooCommerce 11.3:** installed and active. It owns Shop (`/shop/`), Basket, Checkout and My account.
-- **Catalogue:** two categories, Signature Glass and Still Water, and seven published products with photos and descriptions.
-- **Menus:** header is Home, Shop, Trade Enquiry, About, Delivery & Help, My Account, Basket. The Products page is still published but no longer in the menus.
-- **Shop styling:** [`wordpress/olive-shop.css`](../wordpress/olive-shop.css), applied as the site's Additional CSS.
-
-## What is not set up yet
-
-These need the WordPress admin screens, and most need figures from the client. On 2026-11-16 the shop still showed US dollars and no prices, so none of them had been done on this site.
-
-1. Country, currency (GBP) and VAT-inclusive prices.
-2. A price and stock count for each product. Until a product has a price it shows "Read more" and cannot be bought.
-3. The delivery area and delivery charge.
-4. A card payment provider, tested in test mode first.
-5. Guest checkout and account settings.
-6. Policy pages: delivery, returns, privacy and terms. WooCommerce left a draft "Refund and Returns Policy" page to start from.
-7. A paid plan (needed for the custom domain), the domain itself, and launch.
-
-The step-by-step clicks for 1 to 5 are in the build plan, Tasks 1, 2, 5 and 6.
-
-## Changing the shop's look
-
-1. Edit `wordpress/olive-shop.css`. It is written phone first: the base rules are for a 375px screen and the wider layouts are added at the bottom.
-2. Copy the whole file into **Appearance → Editor → Styles → Additional CSS** on the site, replacing what is there.
-3. Check Shop, a product, Basket, Checkout and My account at phone, tablet and desktop widths.
-
-Three things about this theme that the CSS relies on:
-
-- The Shop page puts its content in `main`. Product pages nest `main` inside a `.woocommerce` wrapper. Basket, Checkout and My account are ordinary pages whose content sits in `.entry-content`.
-- Product photos are forced to `object-fit: contain`, so bottles are shown whole.
-- On phones, the add-to-basket form on a product page is fixed to the bottom of the screen. This has not been seen working yet, because no product has a price.
-
-## Do not re-import the static copy
-
-The pages were first created by importing a static copy of `public/`. That copy and its build script have been removed from the repository, because importing again would replace the pages and everything edited in WordPress since.
-
-## What does not move
-
-The staff workspace, order tracking and customer sign-in in `src/` are a Node.js application that WordPress cannot run. They stay on Vercel and Supabase until the WooCommerce shop is live, and are then retired. The code remains in this repository's history.
+1. **Online shop.** Install WooCommerce on the live site and set it up as in the build plan (`docs/superpowers/plans/2026-11-16-wordpress-shop.md`): UK, GBP and VAT, prices and stock, delivery area, card payments in test mode, then live.
+2. **Customer accounts.** WooCommerce provides My Account with order history. Sign-in with Google, Microsoft or Apple needs a social login plugin. Check its price before installing.
+3. **Policy pages.** Delivery, returns, privacy and terms, from the client's own terms.
+4. **Retire the old services.** Delete the Vercel project and pause the Supabase project. Nothing on the live site uses them.

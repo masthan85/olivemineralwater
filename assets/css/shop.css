@@ -1,5 +1,5 @@
 /* OLIVE shop styles. Phone first: base rules are for a 375px screen, wider screens are added below.
-   This file is the source of the site's Additional CSS on WordPress.com. Edit it here, then re-apply it. */
+   Loaded by olive-site.php only while WooCommerce is active. */
 
 :root {
   --olive-green: #184232;

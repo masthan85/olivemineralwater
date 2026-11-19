@@ -1,50 +1,49 @@
-# OLIVE Distribution Platform
+# OLIVE Pure Mineral Water
 
-For the hosted setup, follow the [Vercel deployment guide](docs/VERCEL.md).
+The website for OLIVE Pure Mineral Water runs on WordPress.com at [olivemineralwater.co.uk](https://olivemineralwater.co.uk). This repository holds the **OLIVE Site** WordPress plugin, which adds the site's layout fixes and redirects.
 
-The public OLIVE website and staff workspace run from the same Node.js service. Customers submit order requests and trade enquiries. Staff review requests, link customers, reserve batches, dispatch orders and record delivery outcomes. Customers can check their status with a tracking reference and postcode.
+The pages, menus, images and forms are edited in WordPress itself, not here.
 
 ## Repository layout
 
 | Path | What it holds |
 |---|---|
-| `public/` | The website as served: public pages, staff pages and their `assets/`. `assets/stock.mjs` is shared with the server. |
-| `src/server.mjs` | Entry point for running locally or on your own host (SQLite). |
-| `src/vercel-handler.mjs` | Entry point for the Vercel function (Supabase). |
-| `src/server/` | The application: HTTP routing, business rules, customer accounts, hosted storage and seed data. |
-| `scripts/` | Build tooling: `vercel-build.mjs` for Vercel. |
-| `database/` | SQL to set up Supabase. |
-| `tests/` | Automated tests. Run them with `npm test`. |
-| `docs/` | Guides: [Vercel deployment](docs/VERCEL.md), [customer accounts](docs/CUSTOMER-ACCOUNTS.md) and [WordPress.com](docs/WORDPRESS.md). |
-| `wordpress/` | Styles for the WordPress.com shop. See [docs/WORDPRESS.md](docs/WORDPRESS.md). |
-| `.github/workflows/` | CI: the Vercel build check and the Fortify scan. |
+| `olive-site.php` | The plugin: loads the stylesheets and redirects old and duplicate addresses. |
+| `assets/css/site-fixes.css` | Logo and photo sizing fixes, loaded on every page. |
+| `assets/css/shop.css` | Phone-first styles for the WooCommerce shop pages, loaded only while WooCommerce is active. |
+| `docs/WORDPRESS.md` | How the WordPress site is set up, and what is still open. |
+| `docs/superpowers/` | The design and build plan for the online shop. |
+| `.github/workflows/` | Checks run on every push: PHP syntax and the Fortify scan. |
 
-## Run the local demo
+## Install or update the plugin
 
-Install Node.js 24.14 or later. From this directory run:
+**From GitHub (recommended).** In WordPress.com, open the site's **Settings → Repositories** (GitHub Deployments) and connect this repository:
+
+- Branch: `main`
+- Destination directory: `/wp-content/plugins/olive-site`
+- Automatic deployments: on
+
+Every push to `main` then copies the plugin to the site. Activate **OLIVE Site** once under **Plugins**.
+
+**By hand.** Zip a folder named `olive-site` that contains `olive-site.php` and `assets/`, then upload it under **Plugins → Add New → Upload Plugin**.
+
+## Redirects
+
+The plugin sends these addresses to the right page with a permanent (301) redirect:
+
+| Old address | Goes to |
+|---|---|
+| `/order-query-1/` to `/order-query-4/` | `/order/` |
+| `/account-query-1/` | `/account/` |
+| `/index.html`, `/products.html`, `/order.html`, `/trade-enquiry.html`, `/about.html`, `/delivery.html`, `/track.html`, `/account.html` | the matching page |
+| `/login.html`, `/operations.html`, `/ops-*.html` | `/login/` |
+
+The `.html` addresses are from the previous version of the site. The `-query-` pages were duplicates created when that site was imported into WordPress.
+
+## The previous Node.js app
+
+The site used to be a Node.js app on Vercel with a Supabase database, covering a staff workspace, order tracking and customer sign-in. It was retired when the site moved to WordPress. The last version is kept under the git tag `vercel-app-final`:
 
 ```sh
-npm run demo
+git checkout vercel-app-final
 ```
-
-Open [the homepage](http://127.0.0.1:8766/) or [the staff workspace](http://127.0.0.1:8766/operations.html). The local demo sign-in is `demo@olive.test` with password `olive-local-preview-2026`. It stores sample records in `data/demo.sqlite`. Try tracking `OL-1041` with postcode `SE1 9GF`.
-
-## Architecture
-
-- The public pages and protected staff pages share a same-origin JSON API. Public endpoints can submit requests and look up the status of a specific reference. The tracking response contains status and delivery dates.
-- Staff use server-side sessions with HttpOnly cookies. Staff commands require a session and a CSRF token. Passwords are salted and hashed with scrypt. Login, intake and tracking have request limits.
-- SQLite holds the workspace, staff accounts, sessions and audit metadata. The workspace is one versioned document for this small, single-depot deployment. Each staff command validates business rules on the server and commits the record change and audit entry in one transaction. A stale editor must reopen before writing.
-- Stock reservations reduce availability. Dispatch consumes the reserved quantities and records the recipient and batch movement. Holds and best-before checks block dispatch. Delivery exceptions and retries preserve the original stock movement.
-- Public submissions enter the requests inbox. Staff can create or link a customer, then use the request to open the order editor. The request reference continues to work after the order is created. The site records staff updates to delivery status. It has no carrier feed or payment integration.
-
-## Run with your own data
-
-Set `OLIVE_ADMIN_EMAIL` and `OLIVE_ADMIN_PASSWORD` in the environment before the first start. Use a password of at least 16 characters and keep it out of source control. Then run `npm start`. It listens on port 8080 by default and starts with an empty workspace and the OLIVE product catalogue. The account settings create an account when its email is new. An existing account’s password is preserved. Remove the provisioning password from the environment after creating the account.
-
-Set `OLIVE_DATA` to a private, persistent SQLite path if the default `data/olive.sqlite` is unsuitable. Keep the demo and operational database separate.
-
-To reset an existing staff password, set the account email and new password in the same environment variables and run `node src/server.mjs --reset-password` against the operational database. This revokes the account’s existing sessions.
-
-For hosted access, set `OLIVE_ORIGIN` to the exact public HTTPS origin and optionally set `OLIVE_PORT` for the internal port. Run behind a TLS reverse proxy that preserves the public Host header and connects to the loopback listener. Use a single service instance and persistent storage. Configure backups and test restoration before accepting real records. Apply per-client limits at the reverse proxy because the application sees the proxy’s socket address. Review staff permissions, data retention and privacy copy before launch. All staff accounts currently have the same workspace access.
-
-This package requires a Node.js host for the API and database. A static host such as GitHub Pages cannot run it.

@@ -2,7 +2,7 @@
    The static import wraps each image in a <figure> that does not take part in layout
    (display: contents), so sizing rules aimed at the figure never reach the image.
    These rules size the images themselves.
-   Applied as Additional CSS (Appearance → Editor → Styles → Additional CSS). */
+   Loaded on every page by olive-site.php. */
 
 /* Header and footer logo: without this the header logo renders at its full 1311px width.
    !important is needed because the imported theme sets the logo to `width: inherit`
