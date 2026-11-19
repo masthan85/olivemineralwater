@@ -40,3 +40,7 @@ figure.about-photo { margin-block: 0; }
   padding-block: 10px;
   font-size: 17px;
 }
+
+/* Staff sign-in page: its logo sits in figure.logo without the .brand link class */
+.site-header figure.logo img { display: block; width: 166px !important; max-width: 100% !important; height: auto !important; }
+@media (max-width: 980px) { .site-header figure.logo img { width: 137px !important; } }

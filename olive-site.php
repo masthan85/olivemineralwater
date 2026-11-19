@@ -3,7 +3,7 @@
  * Plugin Name:       OLIVE Site
  * Plugin URI:        https://github.com/masthan85/olivemineralwater
  * Description:       Layout fixes and redirects for the OLIVE Pure Mineral Water website.
- * Version:           1.1.0
+ * Version:           1.1.1
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            OLIVE Pure Mineral Water
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const OLIVE_SITE_VERSION = '1.1.0';
+const OLIVE_SITE_VERSION = '1.1.1';
 
 /**
  * Stylesheets.
@@ -35,8 +35,43 @@ function olive_site_enqueue_styles(): void {
 	if ( class_exists( 'WooCommerce' ) ) {
 		wp_enqueue_style( 'olive-shop', $base . 'shop.css', array( 'olive-site-fixes' ), OLIVE_SITE_VERSION );
 	}
+
+	$is_account = function_exists( 'is_account_page' ) && is_account_page();
+	if ( $is_account || is_page( 'login' ) ) {
+		wp_enqueue_style( 'olive-account', $base . 'account.css', array( 'olive-site-fixes' ), OLIVE_SITE_VERSION );
+	}
 }
 add_action( 'wp_enqueue_scripts', 'olive_site_enqueue_styles', 20 );
+
+/**
+ * Customer accounts.
+ *
+ * Shows "Create an account" beside "Sign in" on My Account, whatever the
+ * WooCommerce setting says. WooCommerce makes the username and emails a link
+ * to set the password, so customers only type their email address.
+ */
+add_filter( 'pre_option_woocommerce_enable_myaccount_registration', fn() => 'yes' );
+add_filter( 'pre_option_woocommerce_registration_generate_username', fn() => 'yes' );
+add_filter( 'pre_option_woocommerce_registration_generate_password', fn() => 'yes' );
+
+/**
+ * Plainer wording on the My Account sign-in and register forms.
+ */
+function olive_site_account_wording( string $translation, string $text, string $domain ): string {
+	if ( 'woocommerce' !== $domain || ! function_exists( 'is_account_page' ) || ! is_account_page() || is_user_logged_in() ) {
+		return $translation;
+	}
+
+	$words = array(
+		'Login'                  => 'Sign in',
+		'Log in'                 => 'Sign in',
+		'Register'               => 'Create an account',
+		'Username or email address' => 'Email address',
+	);
+
+	return $words[ $text ] ?? $translation;
+}
+add_filter( 'gettext', 'olive_site_account_wording', 20, 3 );
 
 /**
  * Where an old or duplicate address should send the visitor, or null to leave it alone.
