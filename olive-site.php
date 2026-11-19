@@ -3,7 +3,7 @@
  * Plugin Name:       OLIVE Site
  * Plugin URI:        https://github.com/masthan85/olivemineralwater
  * Description:       Layout fixes and redirects for the OLIVE Pure Mineral Water website.
- * Version:           1.0.4
+ * Version:           1.0.5
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            OLIVE Pure Mineral Water
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const OLIVE_SITE_VERSION = '1.0.4';
+const OLIVE_SITE_VERSION = '1.0.5';
 
 /**
  * Stylesheets.
@@ -116,3 +116,19 @@ function olive_site_redirect_old_addresses(): void {
 	}
 }
 add_action( 'template_redirect', 'olive_site_redirect_old_addresses', 1 );
+
+/**
+ * [olive_social_login]: the "Continue with Google" buttons on the My Account page.
+ *
+ * Shows Nextend Social Login's buttons to signed-out visitors once at least one
+ * provider is set up in Nextend, and nothing before then, so the page never shows
+ * a raw shortcode.
+ */
+function olive_site_social_login_shortcode(): string {
+	if ( is_user_logged_in() || ! shortcode_exists( 'nextend_social_login' ) ) {
+		return '';
+	}
+
+	return do_shortcode( '[nextend_social_login]' );
+}
+add_shortcode( 'olive_social_login', 'olive_site_social_login_shortcode' );
