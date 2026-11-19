@@ -1,0 +1,89 @@
+/* About page: the "From rain to bottle" section.
+   Phone first: photo above the steps; side by side from 900px.
+   Loaded only on the About page by olive-site.php. */
+
+.olive-journey {
+  padding-block: 8px 72px;
+}
+
+.olive-journey__grid {
+  display: grid;
+  gap: 36px;
+  align-items: center;
+}
+
+.olive-journey__photo {
+  margin: 0;
+}
+
+.olive-journey__photo img {
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(18, 29, 26, 0.14);
+}
+
+.olive-journey__intro {
+  margin-block-start: 0;
+}
+
+.olive-steps {
+  display: grid;
+  gap: 22px;
+  margin-block-start: 26px;
+  counter-reset: olive-step;
+}
+
+.olive-step {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  column-gap: 16px;
+  align-items: start;
+}
+
+.olive-step::before {
+  counter-increment: olive-step;
+  content: counter(olive-step);
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #184232;
+  color: #edc852;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.olive-step > * {
+  grid-column: 2;
+  margin: 0 !important;
+}
+
+.olive-step h3 {
+  font-size: 20px;
+  line-height: 1.25;
+  padding-top: 2px;
+}
+
+.olive-step p {
+  margin-top: 4px !important;
+  color: #555f51;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.olive-journey .wp-block-buttons {
+  margin-top: 30px;
+}
+
+@media (min-width: 900px) {
+  .olive-journey__grid {
+    grid-template-columns: 1.05fr 1fr;
+    gap: 64px;
+  }
+}

@@ -3,7 +3,7 @@
  * Plugin Name:       OLIVE Site
  * Plugin URI:        https://github.com/masthan85/olivemineralwater
  * Description:       Layout fixes and redirects for the OLIVE Pure Mineral Water website.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            OLIVE Pure Mineral Water
@@ -15,18 +15,22 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const OLIVE_SITE_VERSION = '1.0.1';
+const OLIVE_SITE_VERSION = '1.0.2';
 
 /**
  * Stylesheets.
  *
- * site-fixes.css loads on every page. shop.css styles the WooCommerce pages, so it
- * loads only while WooCommerce is active.
+ * site-fixes.css loads on every page and about.css on the About page. shop.css
+ * styles the WooCommerce pages, so it loads only while WooCommerce is active.
  */
 function olive_site_enqueue_styles(): void {
 	$base = plugin_dir_url( __FILE__ ) . 'assets/css/';
 
 	wp_enqueue_style( 'olive-site-fixes', $base . 'site-fixes.css', array(), OLIVE_SITE_VERSION );
+
+	if ( is_page( 'about' ) ) {
+		wp_enqueue_style( 'olive-about', $base . 'about.css', array( 'olive-site-fixes' ), OLIVE_SITE_VERSION );
+	}
 
 	if ( class_exists( 'WooCommerce' ) ) {
 		wp_enqueue_style( 'olive-shop', $base . 'shop.css', array( 'olive-site-fixes' ), OLIVE_SITE_VERSION );
