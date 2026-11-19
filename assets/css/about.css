@@ -87,3 +87,30 @@
     gap: 64px;
   }
 }
+
+/* Intro: one column, so the short line sits under the heading instead of
+   leaving an empty block beside it. Less space before the story section. */
+main > .section.inner:first-child {
+  padding-bottom: 24px !important;
+}
+
+main > .section.inner:first-child .story {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 16px !important;
+}
+
+main > .section.inner:first-child .story > * {
+  max-width: 760px;
+}
+
+main > .section.inner:first-child .story p {
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* Photo and steps start at the same height on wide screens. */
+@media (min-width: 900px) {
+  .olive-journey__grid {
+    align-items: start;
+  }
+}
