@@ -1,0 +1,21 @@
+/* OLIVE: image sizing fixes for the WordPress.com site at olivemineralwater.co.uk.
+   The static import wraps each image in a <figure> that does not take part in layout
+   (display: contents), so sizing rules aimed at the figure never reach the image.
+   These rules size the images themselves.
+   Applied as Additional CSS (Appearance → Editor → Styles → Additional CSS). */
+
+/* Header and footer logo: without this the header logo renders at its full 1311px width.
+   !important is needed because the imported theme sets the logo to `width: inherit`
+   with a more specific selector. */
+.brand img { display: block; width: 166px !important; max-width: 100% !important; height: auto !important; }
+@media (max-width: 980px) { .brand img { width: 137px !important; } }
+
+/* Photos shown whole at the width of their column. */
+.hero-photo img,
+.range-photo img,
+.about-photo img { display: block; width: 100%; height: auto; border-radius: 9px; }
+
+figure.logo,
+figure.hero-photo,
+figure.range-photo,
+figure.about-photo { margin-block: 0; }
