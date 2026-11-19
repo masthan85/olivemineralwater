@@ -10,6 +10,7 @@ The pages, menus, images and forms are edited in WordPress itself, not here.
 |---|---|
 | `olive-site.php` | The plugin: loads the stylesheets and redirects old and duplicate addresses. |
 | `assets/css/site-fixes.css` | Logo and photo sizing fixes, loaded on every page. |
+| `assets/css/about.css` | The About page's "From rain to bottle" section, loaded only on that page. |
 | `assets/css/shop.css` | Phone-first styles for the WooCommerce shop pages, loaded only while WooCommerce is active. |
 | `docs/WORDPRESS.md` | How the WordPress site is set up, and what is still open. |
 | `docs/superpowers/` | The design and build plan for the online shop. |
