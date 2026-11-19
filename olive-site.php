@@ -3,7 +3,7 @@
  * Plugin Name:       OLIVE Site
  * Plugin URI:        https://github.com/masthan85/olivemineralwater
  * Description:       Layout fixes and redirects for the OLIVE Pure Mineral Water website.
- * Version:           1.0.3
+ * Version:           1.0.4
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            OLIVE Pure Mineral Water
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const OLIVE_SITE_VERSION = '1.0.3';
+const OLIVE_SITE_VERSION = '1.0.4';
 
 /**
  * Stylesheets.
@@ -54,12 +54,19 @@ function olive_site_redirect_target( string $path ): ?string {
 		return null;
 	}
 
+	// With WooCommerce, customer accounts live on its My Account page.
+	$account = class_exists( 'WooCommerce' ) ? '/my-account/' : '/account/';
+
 	if ( preg_match( '/^order-query-\d+$/', $path ) ) {
 		return '/order/';
 	}
 
-	if ( preg_match( '/^account-query-\d+$/', $path ) ) {
-		return '/account/';
+	if ( preg_match( '/^account-query-\d+$/', $path ) || 'account.html' === $path ) {
+		return $account;
+	}
+
+	if ( 'account' === $path && '/my-account/' === $account ) {
+		return $account;
 	}
 
 	$old_pages = array(
@@ -70,7 +77,6 @@ function olive_site_redirect_target( string $path ): ?string {
 		'about.html'         => '/about/',
 		'delivery.html'      => '/delivery/',
 		'track.html'         => '/track/',
-		'account.html'       => '/account/',
 		'login.html'         => '/login/',
 		'operations.html'    => '/login/',
 	);
