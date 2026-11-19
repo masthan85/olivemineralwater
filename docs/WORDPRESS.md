@@ -11,7 +11,8 @@ The live site was built by importing the previous Vercel site, so its theme (`ol
 
 ## What the OLIVE Site plugin does
 
-- Loads `assets/css/site-fixes.css`. The import wraps images in figures that do not take part in layout, which left the header logo at its full 1311px width. These rules size the logo and photos directly.
+- Loads `assets/css/site-fixes.css`. The import wraps images in figures that do not take part in layout, which left the header logo at its full 1311px width. These rules size the logo and photos directly. On screens 1280px and wider, content grows from the theme's 1120px to 1400px.
+- The site icon (browser tab and bookmarks) is the olive branch, media item 80 (`olive-site-icon.png`, the same image as `assets/pwa/icon-512.png`). It is set under Settings → General, not by the plugin.
 - Loads `assets/css/shop.css` once WooCommerce is installed.
 - Redirects the previous site's `.html` addresses and the import's duplicate pages. See the README for the list.
 
@@ -23,7 +24,8 @@ The live site was built by importing the previous Vercel site, so its theme (`ol
 | Order | A Jetpack form. Each request is emailed to the site's admin email and kept under **Feedback** in wp-admin. |
 | Trade Enquiry | A Jetpack form, as above. |
 | Track Order | A Jetpack form asking for the order reference, postcode and email. The team replies by email. There is no automatic lookup. |
-| My Account (`/my-account/`) | WooCommerce's account page: sign in, order history and saved addresses. The `[olive_social_login]` shortcode shows Nextend Social Login's "Continue with Google" button once Google is set up in Nextend. The old `/account/` page redirects here. |
+| My Account (`/my-account/`) | WooCommerce's account page: sign in, order history and saved addresses. The `[olive_social_login]` shortcode shows Nextend Social Login's "Continue with Google" button once Google is set up in Nextend. The old `/account/` page redirects here. The plugin always shows **Sign in** and **Create an account** side by side: a new customer enters only an email address and is emailed a link to set a password. |
+| Staff sign-in (`/login/`) | A single card with the WordPress sign-in form; staff go to wp-admin after signing in. |
 | Staff sign-in | The WordPress login. Staff use their WordPress.com account. |
 | `order-query-1` to `-4`, `account-query-1` | Duplicates left by the import. The plugin redirects them; they can be moved to the bin once the plugin is active. |
 
