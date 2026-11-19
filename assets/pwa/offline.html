@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#184232">
+  <title>You're offline | OLIVE Pure Mineral Water</title>
+  <style>
+    html, body { margin: 0; height: 100%; }
+    body {
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      box-sizing: border-box;
+      background: #f6f3e9;
+      color: #202b22;
+      font-family: "Jost", "Segoe UI", system-ui, sans-serif;
+      text-align: center;
+    }
+    .card { max-width: 360px; }
+    .mark {
+      width: 96px; height: 96px; margin: 0 auto 24px;
+      border-radius: 22px; background: #184232;
+      display: grid; place-items: center;
+      color: #edc852; font: 500 30px/1 Georgia, serif; letter-spacing: .08em;
+    }
+    h1 { margin: 0 0 12px; font: 500 30px/1.15 Georgia, "Times New Roman", serif; }
+    p { margin: 0 0 24px; color: #555f51; line-height: 1.6; }
+    button {
+      min-height: 48px; padding: 12px 28px; border: 0; border-radius: 100px;
+      background: #184232; color: #fff; font: 600 16px/1 inherit; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="mark" aria-hidden="true">O</div>
+    <h1>You're offline</h1>
+    <p>OLIVE needs an internet connection to show products and take orders. Check your connection, then try again.</p>
+    <button type="button" onclick="location.reload()">Try again</button>
+  </main>
+</body>
+</html>

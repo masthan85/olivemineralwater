@@ -3,7 +3,7 @@
  * Plugin Name:       OLIVE Site
  * Plugin URI:        https://github.com/masthan85/olivemineralwater
  * Description:       Layout fixes and redirects for the OLIVE Pure Mineral Water website.
- * Version:           1.0.5
+ * Version:           1.1.0
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            OLIVE Pure Mineral Water
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const OLIVE_SITE_VERSION = '1.0.5';
+const OLIVE_SITE_VERSION = '1.1.0';
 
 /**
  * Stylesheets.
@@ -132,3 +132,78 @@ function olive_site_social_login_shortcode(): string {
 	return do_shortcode( '[nextend_social_login]' );
 }
 add_shortcode( 'olive_social_login', 'olive_site_social_login_shortcode' );
+
+/**
+ * App support: lets phones install the site as the OLIVE app, and lets the
+ * Google Play version open the site full screen.
+ *
+ * - /?olive_sw=1 serves the service worker from the site root, so it can control every page.
+ * - /?olive_offline=1 serves the page shown when there is no connection.
+ * - /.well-known/assetlinks.json proves to Android that the Google Play app belongs to
+ *   this site. assets/pwa/assetlinks.json holds the app's signing fingerprint.
+ */
+function olive_site_serve_app_files(): void {
+	$dir = plugin_dir_path( __FILE__ ) . 'assets/pwa/';
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only public files.
+	$query = $_GET;
+	$path  = isset( $_SERVER['REQUEST_URI'] ) ? wp_parse_url( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), PHP_URL_PATH ) : '';
+
+	$files = array();
+	if ( isset( $query['olive_sw'] ) ) {
+		$files = array( 'sw.js', 'application/javascript; charset=utf-8', array( 'Service-Worker-Allowed: /' ) );
+	} elseif ( isset( $query['olive_offline'] ) ) {
+		$files = array( 'offline.html', 'text/html; charset=utf-8', array() );
+	} elseif ( '/.well-known/assetlinks.json' === $path ) {
+		$files = array( 'assetlinks.json', 'application/json', array( 'Access-Control-Allow-Origin: *' ) );
+	}
+
+	if ( ! $files ) {
+		return;
+	}
+
+	list( $file, $type, $extra ) = $files;
+	status_header( 200 );
+	header( 'Content-Type: ' . $type );
+	header( 'Cache-Control: no-cache' );
+	header( 'X-Content-Type-Options: nosniff' );
+	foreach ( $extra as $line ) {
+		header( $line );
+	}
+	readfile( $dir . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile
+	exit;
+}
+add_action( 'init', 'olive_site_serve_app_files', 1 );
+
+/**
+ * Tells browsers about the app: manifest, colours and home-screen icons.
+ */
+function olive_site_app_head(): void {
+	$base = plugin_dir_url( __FILE__ ) . 'assets/pwa/';
+	printf( '<link rel="manifest" href="%s">' . "\n", esc_url( $base . 'manifest.json?ver=' . OLIVE_SITE_VERSION ) );
+	echo '<meta name="theme-color" content="#184232">' . "\n";
+	echo '<meta name="mobile-web-app-capable" content="yes">' . "\n";
+	echo '<meta name="apple-mobile-web-app-capable" content="yes">' . "\n";
+	echo '<meta name="apple-mobile-web-app-title" content="OLIVE">' . "\n";
+	echo '<meta name="apple-mobile-web-app-status-bar-style" content="default">' . "\n";
+	printf( '<link rel="apple-touch-icon" href="%s">' . "\n", esc_url( $base . 'apple-touch-icon.png' ) );
+}
+add_action( 'wp_head', 'olive_site_app_head', 2 );
+
+/**
+ * Registers the service worker once the page has loaded.
+ */
+function olive_site_register_service_worker(): void {
+	if ( is_admin() ) {
+		return;
+	}
+	?>
+	<script>
+	if ('serviceWorker' in navigator) {
+		window.addEventListener('load', function () {
+			navigator.serviceWorker.register('/?olive_sw=1', { scope: '/' }).catch(function () {});
+		});
+	}
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'olive_site_register_service_worker', 99 );
