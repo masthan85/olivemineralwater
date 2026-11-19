@@ -19,3 +19,24 @@ figure.logo,
 figure.hero-photo,
 figure.range-photo,
 figure.about-photo { margin-block: 0; }
+
+/* Phone menu: the import leaves the menu links black on the dark green overlay,
+   so they are almost invisible. Make them white, with the current page in gold. */
+.wp-block-navigation__responsive-container.is-menu-open {
+  background-color: #184232 !important;
+  color: #fff !important;
+}
+.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__content,
+.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-close {
+  color: #fff !important;
+}
+.wp-block-navigation__responsive-container.is-menu-open .current-menu-item > .wp-block-navigation-item__content,
+.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__content[aria-current="page"],
+.wp-block-navigation__responsive-container.is-menu-open .button--line > .wp-block-navigation-item__content {
+  color: #edc852 !important;
+}
+.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__content {
+  display: block;
+  padding-block: 10px;
+  font-size: 17px;
+}
