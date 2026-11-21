@@ -3,7 +3,7 @@
  * Plugin Name:       OLIVE Site
  * Plugin URI:        https://github.com/masthan85/olivemineralwater
  * Description:       Layout fixes and redirects for the OLIVE Pure Mineral Water website.
- * Version:           1.1.2
+ * Version:           1.1.3
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            OLIVE Pure Mineral Water
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const OLIVE_SITE_VERSION = '1.1.2';
+const OLIVE_SITE_VERSION = '1.1.3';
 
 /**
  * Stylesheets.
@@ -242,3 +242,37 @@ function olive_site_register_service_worker(): void {
 	<?php
 }
 add_action( 'wp_footer', 'olive_site_register_service_worker', 99 );
+
+/**
+ * Link previews.
+ *
+ * Adds Open Graph and Twitter card tags so a link shared on WhatsApp,
+ * Facebook, LinkedIn or X shows the page title and the bottle photo.
+ * Skipped when Jetpack already prints its own Open Graph tags.
+ */
+function olive_site_link_preview_tags(): void {
+	if ( has_action( 'wp_head', 'jetpack_og_tags' ) ) {
+		return;
+	}
+
+	$image = home_url( '/wp-content/uploads/2026/11/mountain-water.jpg' );
+	if ( is_singular() && has_post_thumbnail() ) {
+		$image = (string) get_the_post_thumbnail_url( null, 'large' );
+	}
+
+	$url  = is_singular() ? (string) get_permalink() : home_url( '/' );
+	$tags = array(
+		'og:type'      => is_front_page() ? 'website' : 'article',
+		'og:site_name' => get_bloginfo( 'name' ),
+		'og:title'     => wp_get_document_title(),
+		'og:url'       => $url,
+		'og:image'     => $image,
+		'og:locale'    => 'en_GB',
+	);
+
+	foreach ( $tags as $property => $content ) {
+		printf( '<meta property="%s" content="%s">' . "\n", esc_attr( $property ), esc_attr( $content ) );
+	}
+	echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
+}
+add_action( 'wp_head', 'olive_site_link_preview_tags', 5 );

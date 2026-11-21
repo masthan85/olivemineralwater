@@ -50,3 +50,11 @@ figure.about-photo { margin-block: 0; }
 @media (min-width: 1280px) {
   body .wrap { width: min(1400px, 100% - 120px); }
 }
+
+/* Header: it sticks to the top while scrolling but had no background of its
+   own on the home page, so the hero photo and text showed through it.
+   Give it the brand green everywhere and keep it above page content. */
+.site-header {
+  background-color: #184232 !important;
+  z-index: 100 !important;
+}
