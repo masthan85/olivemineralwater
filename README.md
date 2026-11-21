@@ -43,6 +43,13 @@ The plugin sends these addresses to the right page with a permanent (301) redire
 
 The `.html` addresses are from the previous version of the site. The `-query-` pages were duplicates created when that site was imported into WordPress.
 
+## Backups
+
+- **Code:** the branch and tag `backup-2026-11-21` on GitHub hold the plugin exactly as it was live on 21 November 2026. They are never changed. To look at it or restore it: `git checkout backup-2026-11-21`.
+- **Website:** pages, products, orders, form entries, images and settings live in WordPress, not in this repository. WordPress.com backs up the whole site every day (Jetpack Backup, under **Jetpack → Backup** in the site dashboard), and any day can be restored from there.
+
+Keep the plugin files (`olive-site.php`, `assets/`) at the top of `main`: every push to `main` copies the top level of the repository into the live plugin folder.
+
 ## The previous Node.js app
 
 The site used to be a Node.js app on Vercel with a Supabase database, covering a staff workspace, order tracking and customer sign-in. It was retired when the site moved to WordPress. The last version is kept under the git tag `vercel-app-final`:
