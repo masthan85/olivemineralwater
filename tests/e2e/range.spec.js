@@ -11,6 +11,10 @@ const retiredSizes = /\b(250 ?ml|500 ?ml|1 ?litre|1 ?ltr|PET)\b/i;
 // Photos of the old curved bottle with a gold cap.
 const oldPhotos = /(classic-olive|forest-reserve|sapphire-blue|aqua-spring|mountain-water|6aff607a1adcd)\./;
 
+// The client's Emerald Green photo with a "DESIGN CONCEPTS" plaque; the site
+// uses a copy cropped without it (olive-emerald-green-750ml-330ml.jpg).
+const plaquePhoto = /SD-Emerald-Green-2-Glass-Bottles/;
+
 test.beforeEach(({}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop', 'runs once, on desktop');
 });
@@ -30,7 +34,7 @@ for (const path of pages) {
     const sources = await page.locator('main img').evaluateAll(
       (imgs) => imgs.map((img) => img.currentSrc || img.src),
     );
-    const old = sources.filter((src) => oldPhotos.test(src));
+    const old = sources.filter((src) => oldPhotos.test(src) || plaquePhoto.test(src));
     expect(old, 'photos of the old bottle').toEqual([]);
   });
 }
