@@ -52,3 +52,24 @@ test('link previews use the new bottle photo', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('meta[property="og:image"]')).not.toHaveAttribute('content', oldPhotos);
 });
+
+test('every bottle card shows both sizes, then the description, then the link', async ({ page }) => {
+  for (const path of ['/', '/products/']) {
+    await page.goto(path);
+    const cards = page.locator('.bottle-card');
+    await expect(cards, path).toHaveCount(4);
+    for (let i = 0; i < 4; i += 1) {
+      await expect(cards.nth(i).locator('.bottle-title mark'), `${path} card ${i + 1}`).toHaveText('330ml / 750ml');
+    }
+    // The size sits under the name, not beside it.
+    const title = await cards.first().locator('.bottle-title h3').boundingBox();
+    const size = await cards.first().locator('.bottle-title mark').boundingBox();
+    expect(size.y, `${path}: size below the name`).toBeGreaterThan(title.y + title.height - 2);
+  }
+  // On the Products page the request links line up along the bottom.
+  await page.goto('/products/');
+  const bottoms = await page.locator('.bottle-card a.text-link').evaluateAll(
+    (links) => links.map((a) => Math.round(a.getBoundingClientRect().bottom)),
+  );
+  expect(Math.max(...bottoms) - Math.min(...bottoms), 'request links line up').toBeLessThanOrEqual(2);
+});

@@ -58,3 +58,33 @@ figure.about-photo { margin-block: 0; }
   background-color: #184232 !important;
   z-index: 100 !important;
 }
+
+/* Bottle cards (Home and Products): photo, then name, then size, then the
+   description, with the "Request …" link pinned to the bottom so the links
+   line up across the row. */
+.bottle-card {
+  display: flex !important;
+  flex-direction: column;
+  height: 100%;
+}
+.bottle-card > .bottle-info {
+  display: flex !important;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+.bottle-card .bottle-title {
+  display: block !important;
+}
+.bottle-card .bottle-title h3 {
+  margin: 0;
+}
+.bottle-card .bottle-title p {
+  margin: 6px 0 0;
+}
+.bottle-card .bottle-info > p {
+  margin-top: 12px;
+}
+.bottle-card .bottle-info > p:has(> a.text-link) {
+  margin-top: auto;
+  padding-top: 16px;
+}
