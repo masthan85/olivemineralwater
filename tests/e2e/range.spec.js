@@ -17,7 +17,7 @@ const plaquePhoto = /SD-Emerald-Green-2-Glass-Bottles/;
 
 // The client's originals with blue "Product of United Kingdom" banners; the
 // site uses edited copies with lettering in the label's own colours.
-const bannerPhotos = /SD-(Olive-Green|Dark-Green|Deep-Sapphire)-Glass-Bottle|olive-emerald-green-750ml(-330ml)?\.jpg/;
+const bannerPhotos = /SD-(Olive-Green|Dark-Green|Deep-Sapphire)-Glass-Bottle|olive-emerald-green-750ml(-330ml)?(-v2)?\.jpg|olive-(classic-olive-green|forest-reserve|deep-sapphire-blue)-750ml\.jpg/;
 
 test.beforeEach(({}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop', 'runs once, on desktop');

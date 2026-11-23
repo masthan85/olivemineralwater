@@ -30,7 +30,7 @@ function FitQuad($pts, $cx) {
   return $r
 }
 
-function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $searchBot, $textSize, $spacing, $lift, $inkColor = $script:ink) {
+function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $searchBot, $textSize, $spacing, $profY, $profX, $inkColor = $script:ink) {
   # 1. Find the label's gold bottom edge outside the banner.
   $pts = @(); $thick = @(); $goldCols = @()
   for ($x = $lx1; $x -le $lx2; $x++) {
@@ -40,16 +40,36 @@ function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $search
       if (-not $inMask -and (IsGold $bmp.GetPixel($x, $y))) { $run += $y }
     }
     if ($run.Count -ge 2 -and $run.Count -le 12 -and (($run[-1] - $run[0]) -le 14)) {
-      $pts += ,@($x, (($run | Measure-Object -Average).Average)); $thick += $run.Count
+      # the bottom edge of the gold: the banner can hide the top of the border, never its bottom
+      $pts += ,@($x, $run[-1]); $thick += $run.Count
       foreach ($yy in $run) { $goldCols += $bmp.GetPixel($x, $yy) }
     }
   }
   $cx = ($mx1 + $mx2) / 2.0
   $fit = FitQuad $pts $cx
+  # Refit twice without outliers (gold reflections in the glass, decorations).
+  for ($pass = 0; $pass -lt 2; $pass++) {
+    $keep = @($pts | Where-Object { $dd = $_[0] - $cx; [Math]::Abs($_[1] - ($fit[0] + $fit[1]*$dd + $fit[2]*$dd*$dd)) -le 1.6 })
+    if ($keep.Count -ge 12) { $pts = $keep; $fit = FitQuad $pts $cx }
+  }
   $band = [Math]::Max(3, (($thick | Sort-Object)[[int]($thick.Count/2)]))
   $gold = [System.Drawing.Color]::FromArgb([int](($goldCols | Measure-Object R -Average).Average), [int](($goldCols | Measure-Object G -Average).Average), [int](($goldCols | Measure-Object B -Average).Average))
   $script:previews += ,@("p-$name", [Math]::Max(0, $lx1 - 10), [Math]::Max(0, $my1 - 50), [Math]::Min($W - $lx1 + 10, $lx2 - $lx1 + 20), [Math]::Min($H - $my1 + 50, 110), 4)
-  "$name : $($pts.Count) edge points, curve a=$([Math]::Round($fit[0],1)) b=$([Math]::Round($fit[1],4)) c=$([Math]::Round($fit[2],5)), band $band px"
+  # Border profile across the label's straight left side: walk left from inside
+  # the label to the gold, through it, and keep from the inner shadow line to the
+  # outer dark line. t = distance outward from the gold's centre.
+  $x = $profX
+  while (-not (IsGold $bmp.GetPixel($x, $profY)) -and $x -gt 0) { $x-- }
+  $goldIn = $x
+  while ((IsGold $bmp.GetPixel($x, $profY)) -and $x -gt 0) { $x-- }
+  $goldOut = $x + 1
+  $center = ($goldIn + $goldOut) / 2.0
+  $inEnd = $goldIn + 3; $outEnd = $goldOut - 1
+  $profile = @{}; for ($px = $outEnd; $px -le $inEnd; $px++) { $profile[$px] = $bmp.GetPixel($px, $profY) }
+  $insideHalf = $inEnd - $center; $outsideHalf = $center - $outEnd
+  # the curve was fitted to the gold's bottom edge; move it up to the gold's centre
+  $fit[0] -= ($goldIn - $goldOut) / 2.0
+  "$name : $($pts.Count) edge points, curve a=$([Math]::Round($fit[0],1)) b=$([Math]::Round($fit[1],4)) c=$([Math]::Round($fit[2],5)), border $($goldIn - $goldOut + 1) px gold, profile $([Math]::Round($insideHalf,1)) in / $([Math]::Round($outsideHalf,1)) out"
 
   # 2. Label green per column just above the banner. Columns hidden by text
   #    are skipped, then the colours are smoothed across a 25 px window so the
@@ -73,9 +93,11 @@ function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $search
   for ($x = $mx1; $x -le $mx2; $x++) { for ($y = $my2 + 1; $y -le [Math]::Min($H - 1, $my2 + 40); $y++) { $orig["$x,$y"] = $bmp.GetPixel($x, $y) } }
   for ($x = $mx1; $x -le $mx2; $x++) {
     $d = $x - $cx; $mid = $fit[0] + $fit[1]*$d + $fit[2]*$d*$d
-    $inner = $mid - $band / 2.0; $outer = $mid + $band / 2.0
+    $cos = 1.0 / [Math]::Sqrt(1 + [Math]::Pow($fit[1] + 2*$fit[2]*$d, 2))
+    $inner = $mid - $insideHalf / $cos; $outer = $mid + $outsideHalf / $cos
     for ($y = $my1; $y -le $my2; $y++) {
-      if ($y -lt $inner - 0.5) {
+      $t = ($y - $mid) * $cos
+      if ($t -lt -$insideHalf) {
         # Top of the banner: the smoothed green from above. Lower down, blend
         # towards the label's own green just left and right of the banner on
         # the same row, so the shading continues instead of forming a block.
@@ -89,16 +111,25 @@ function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $search
           $tv = [Math]::Min(0.6, ($y - $my1) / [double]([Math]::Max(1, $inner - $my1)) * 0.6)
           $col = Mix $col $hMix $tv
         }
-      } elseif ($y -le $outer + 0.5) {
-        $e = [Math]::Min($y - ($inner - 0.5), ($outer + 0.5) - $y); $t = [Math]::Min(1.0, 0.3 + $e / 1.2)
-        $edgeCol = if (($y - $inner) -lt ($outer - $y)) { $green[$x] } else { $orig["$x,$([Math]::Min($H-1,$my2+1))"] }
-        $col = Mix $edgeCol $gold $t
+        # Where the label continues below the banner, fade down into its real
+        # colour there so there is no step at the banner's bottom edge.
+        $bs = @(); for ($k = [Math]::Max($mx1, $x - 6); $k -le [Math]::Min($mx2, $x + 6); $k++) { $c = $orig["$k,$($my2 + 1)"]; if ($c -and (Lum $c) -lt 125 -and -not (IsGold $c)) { $bs += $c } }
+        $bot = if ($bs.Count -gt 0) { [System.Drawing.Color]::FromArgb([int](($bs | Measure-Object R -Average).Average), [int](($bs | Measure-Object G -Average).Average), [int](($bs | Measure-Object B -Average).Average)) } else { $null }
+        if ($bot -and (Lum $bot) -lt 125 -and -not (IsGold $bot) -and ($my2 + 1) -lt ($mid - $insideHalf / $cos)) {
+          $col = Mix $col $bot ([Math]::Min(1.0, [Math]::Max(0.0, ($y - $my1) / [double]($my2 + 1 - $my1))))
+        }
+      } elseif ($t -le $outsideHalf) {
+        # the border, copied layer by layer from the label's side
+        $sx = $center - $t; $x0 = [Math]::Floor($sx); $f = $sx - $x0
+        $c0 = $profile[[int][Math]::Max($outEnd, [Math]::Min($inEnd, $x0))]; $c1 = $profile[[int][Math]::Max($outEnd, [Math]::Min($inEnd, $x0 + 1))]
+        $col = Mix $c0 $c1 $f
+        if ($t -lt -$insideHalf + 1) { $col = Mix $green[$x] $col ($t + $insideHalf) }
       } else {
         # outside the label: mirror the scenery beside the banner, fading into
         # the scenery just below it near the bottom edge
         $mxs = if ($x -lt $cx) { [Math]::Max(0, 2 * $mx1 - $x - 1) } else { [Math]::Min($W - 1, 2 * $mx2 - $x + 1) }
         $side = $bmp.GetPixel($mxs, $y)
-        $down = $orig["$x,$([Math]::Min($my2 + 1 + [int]($y - $outer), $my2 + 40))"]
+        $down = $orig["$x,$([Math]::Min($my2 + 1 + ($my2 - $y), $my2 + 40))"]   # mirrored about the bottom edge, so the rows meet exactly
         if (-not $down) { $down = $orig["$x,$($my2+1)"] }
         $tv = [Math]::Max(0.0, 1.0 - ($my2 - $y) / 10.0)
         $col = Mix $side $down $tv
@@ -119,7 +150,9 @@ function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $search
     $x = $cx - $total / 2; $ff = $font.FontFamily; $asc = $textSize * $ff.GetCellAscent([System.Drawing.FontStyle]::Regular) / $ff.GetEmHeight([System.Drawing.FontStyle]::Regular)
     for ($i = 0; $i -lt $widths.Count; $i++) {
       $m = $x + $widths[$i] / 2; $d = $m - $cx
-      $yb = $fit[0] + $fit[1]*$d + $fit[2]*$d*$d - $band / 2.0 - $lift
+      $cosT = 1.0 / [Math]::Sqrt(1 + [Math]::Pow($fit[1] + 2*$fit[2]*$d, 2))
+      $gap = [Math]::Max(2.5, $textSize * 0.3)
+      $yb = $fit[0] + $fit[1]*$d + $fit[2]*$d*$d - ($insideHalf + $gap) / $cosT
       $ang = [Math]::Atan($fit[1] + 2*$fit[2]*$d) * 180 / [Math]::PI
       $st = $g.Save(); $g.TranslateTransform([float]$m, [float]$yb); $g.RotateTransform([float]$ang)
       $g.DrawString([string]$text[$i], $font, $brush, [float](-$widths[$i]/2), [float](-$asc), $fmt); $g.Restore($st)
@@ -136,20 +169,15 @@ $script:ink = [System.Drawing.Color]::FromArgb(230, 212, 158)
 
 $white = [System.Drawing.Color]::FromArgb(236, 240, 247)
 switch -Wildcard ($In) {
-  '*Emerald*' {
-    #        name     banner x1 x2   y1  y2   label x1 x2  search y  size spacing lift
-    FixLabel 'big'    176 447  784 820   118 505   770 845   12   1.6  3
-    FixLabel '750ml'  577 751  810 834   560 772   800 852   7.5  0.8  6
-    FixLabel '330ml'  792 929  796 816   783 946   788 828   6    0.6  5
+  '*merald*' {
+    #        name     banner x1 x2   y1  y2   label x1 x2  search y  size spacing  profile y, inside x
+    FixLabel 'big'    176 447  784 820   118 505   770 845   12   1.6   610 135
+    FixLabel '750ml'  577 751  810 840   560 772   800 852   7.5  0.8   775 572
+    FixLabel '330ml'  792 929  796 820   783 946   788 828   6    0.6   760 795
   }
-  '*emerald*' {
-    FixLabel 'big'    176 447  784 820   118 505   770 845   12   1.6  3
-    FixLabel '750ml'  577 751  810 834   560 772   800 852   7.5  0.8  6
-    FixLabel '330ml'  792 929  796 816   783 946   788 828   6    0.6  5
-  }
-  '*Olive-Green*'    { FixLabel 'bottle' 608 752  807 830   582 778   798 852   7.5  0.8  9 }
-  '*Dark-Green*'     { FixLabel 'bottle' 583 757  865 893   559 785   858 918   8    0.9  10 }
-  '*Deep-Sapphire*'  { FixLabel 'bottle' 577 752  829 855   562 773   822 872   8    0.9  9  $white }
+  '*Olive-Green*'    { FixLabel 'bottle' 608 752  807 834   582 778   798 852   7.5  0.8   790 598 }
+  '*Dark-Green*'     { FixLabel 'bottle' 583 757  865 897   559 785   858 918   8    0.9   850 575 }
+  '*Deep-Sapphire*'  { FixLabel 'bottle' 577 752  829 859   562 773   822 872   8    0.9   800 578  $white }
 }
 
 $enc = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | Where-Object { $_.MimeType -eq 'image/jpeg' }
