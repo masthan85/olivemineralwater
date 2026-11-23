@@ -13,6 +13,7 @@ $W = $bmp.Width; $H = $bmp.Height
 
 function Lum($c) { 0.3 * $c.R + 0.59 * $c.G + 0.11 * $c.B }
 function Mix($a, $b, $t) { [System.Drawing.Color]::FromArgb([int]($a.R*(1-$t)+$b.R*$t), [int]($a.G*(1-$t)+$b.G*$t), [int]($a.B*(1-$t)+$b.B*$t)) }
+function Near($a, $b) { if (-not $b) { return $false }; ([Math]::Abs($a.R-$b.R) + [Math]::Abs($a.G-$b.G) + [Math]::Abs($a.B-$b.B)) -lt 70 }
 function IsGold($c) { $c.R -gt 140 -and $c.G -gt 100 -and $c.B -lt 120 -and $c.R -ge $c.G -and ($c.R - $c.B) -gt 60 }
 
 # Least-squares fit of y = a + b*dx + c*dx^2.
@@ -29,7 +30,7 @@ function FitQuad($pts, $cx) {
   return $r
 }
 
-function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $searchBot, $textSize, $spacing, $lift) {
+function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $searchBot, $textSize, $spacing, $lift, $inkColor = $script:ink) {
   # 1. Find the label's gold bottom edge outside the banner.
   $pts = @(); $thick = @(); $goldCols = @()
   for ($x = $lx1; $x -le $lx2; $x++) {
@@ -47,6 +48,7 @@ function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $search
   $fit = FitQuad $pts $cx
   $band = [Math]::Max(3, (($thick | Sort-Object)[[int]($thick.Count/2)]))
   $gold = [System.Drawing.Color]::FromArgb([int](($goldCols | Measure-Object R -Average).Average), [int](($goldCols | Measure-Object G -Average).Average), [int](($goldCols | Measure-Object B -Average).Average))
+  $script:previews += ,@("p-$name", [Math]::Max(0, $lx1 - 10), [Math]::Max(0, $my1 - 50), [Math]::Min($W - $lx1 + 10, $lx2 - $lx1 + 20), [Math]::Min($H - $my1 + 50, 110), 4)
   "$name : $($pts.Count) edge points, curve a=$([Math]::Round($fit[0],1)) b=$([Math]::Round($fit[1],4)) c=$([Math]::Round($fit[2],5)), band $band px"
 
   # 2. Label green per column just above the banner. Columns hidden by text
@@ -54,7 +56,7 @@ function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $search
   #    label's shading survives but no stripes do.
   $raw = @{}
   for ($x = $mx1 - 12; $x -le $mx2 + 12; $x++) {
-    $cs = @(2..4 | ForEach-Object { $bmp.GetPixel($x, $my1 - $_) }) | Where-Object { (Lum $_) -lt 75 -and $_.G -gt $_.R -and $_.G -gt $_.B }
+    $cs = @(2..4 | ForEach-Object { $bmp.GetPixel($x, $my1 - $_) }) | Where-Object { (Lum $_) -lt 125 -and -not (IsGold $_) -and ([Math]::Max($_.R,[Math]::Max($_.G,$_.B)) - [Math]::Min($_.R,[Math]::Min($_.G,$_.B))) -gt 25 }
     if ($cs.Count -gt 0) { $raw[$x] = @(($cs | Measure-Object R -Average).Average, ($cs | Measure-Object G -Average).Average, ($cs | Measure-Object B -Average).Average) }
   }
   $green = @{}
@@ -79,8 +81,8 @@ function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $search
         # the same row, so the shading continues instead of forming a block.
         $col = $green[$x]
         $L = $bmp.GetPixel($mx1 - 2, $y); $R = $bmp.GetPixel($mx2 + 2, $y)
-        $okL = (Lum $L) -lt 80 -and $L.G -gt $L.R -and $L.G -gt $L.B
-        $okR = (Lum $R) -lt 80 -and $R.G -gt $R.R -and $R.G -gt $R.B
+        $okL = (Near $L $green[$mx1]) -and (Lum $L) -lt 125 -and -not (IsGold $L) -and ([Math]::Max($L.R,[Math]::Max($L.G,$L.B)) - [Math]::Min($L.R,[Math]::Min($L.G,$L.B))) -gt 25
+        $okR = (Near $R $green[$mx2]) -and (Lum $R) -lt 125 -and -not (IsGold $R) -and ([Math]::Max($R.R,[Math]::Max($R.G,$R.B)) - [Math]::Min($R.R,[Math]::Min($R.G,$R.B))) -gt 25
         if ($okL -or $okR) {
           if (-not $okL) { $L = $R }; if (-not $okR) { $R = $L }
           $hMix = Mix $L $R (($x - $mx1) / [double]($mx2 - $mx1))
@@ -110,7 +112,7 @@ function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $search
     $g.SmoothingMode = 'AntiAlias'; $g.TextRenderingHint = 'AntiAlias'
     $font = New-Object System.Drawing.Font $script:serif, $textSize, ([System.Drawing.FontStyle]::Regular), ([System.Drawing.GraphicsUnit]::Pixel)
     $fmt = [System.Drawing.StringFormat]::GenericTypographic
-    $brush = New-Object System.Drawing.SolidBrush $script:ink
+    $brush = New-Object System.Drawing.SolidBrush $inkColor
     $text = 'PRODUCT OF UNITED KINGDOM'
     $widths = @(); foreach ($ch in $text.ToCharArray()) { $w = $g.MeasureString([string]$ch, $font, 1000, $fmt).Width; if ($ch -eq ' ') { $w = $textSize * 0.38 }; $widths += $w }
     $total = ($widths | Measure-Object -Sum).Sum + $spacing * ($widths.Count - 1)
@@ -127,21 +129,35 @@ function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $search
   }
 }
 
+$script:previews = @()
 $script:serif = 'Palatino Linotype'
 if (-not ([System.Drawing.FontFamily]::Families | Where-Object { $_.Name -eq $script:serif })) { $script:serif = 'Georgia' }
 $script:ink = [System.Drawing.Color]::FromArgb(230, 212, 158)
 
-#        name     banner x1 x2   y1  y2   label x1 x2  search y  text size spacing lift
-FixLabel 'big'    176 447  784 820   118 505   770 845   12   1.6  3
-FixLabel '750ml'  577 751  810 834   560 772   800 852   7.5  0.8  6
-FixLabel '330ml'  792 929  796 816   783 946   788 828   6    0.6  5
+$white = [System.Drawing.Color]::FromArgb(236, 240, 247)
+switch -Wildcard ($In) {
+  '*Emerald*' {
+    #        name     banner x1 x2   y1  y2   label x1 x2  search y  size spacing lift
+    FixLabel 'big'    176 447  784 820   118 505   770 845   12   1.6  3
+    FixLabel '750ml'  577 751  810 834   560 772   800 852   7.5  0.8  6
+    FixLabel '330ml'  792 929  796 816   783 946   788 828   6    0.6  5
+  }
+  '*emerald*' {
+    FixLabel 'big'    176 447  784 820   118 505   770 845   12   1.6  3
+    FixLabel '750ml'  577 751  810 834   560 772   800 852   7.5  0.8  6
+    FixLabel '330ml'  792 929  796 816   783 946   788 828   6    0.6  5
+  }
+  '*Olive-Green*'    { FixLabel 'bottle' 608 752  807 830   582 778   798 852   7.5  0.8  9 }
+  '*Dark-Green*'     { FixLabel 'bottle' 583 757  865 893   559 785   858 918   8    0.9  10 }
+  '*Deep-Sapphire*'  { FixLabel 'bottle' 577 752  829 855   562 773   822 872   8    0.9  9  $white }
+}
 
 $enc = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | Where-Object { $_.MimeType -eq 'image/jpeg' }
 $p = New-Object System.Drawing.Imaging.EncoderParameters 1
 $p.Param[0] = New-Object System.Drawing.Imaging.EncoderParameter ([System.Drawing.Imaging.Encoder]::Quality), 92L
 $bmp.Save("$dir\$Out", $enc, $p)
 if ($Preview) {
-  foreach ($z in @(@('p-big', 100, 700, 430, 160, 2), @('p-750', 550, 760, 240, 100, 4), @('p-330', 780, 760, 180, 75, 5))) {
+  foreach ($z in $script:previews) {
     $zb = New-Object System.Drawing.Bitmap ($z[3]*$z[5]), ($z[4]*$z[5])
     $zg = [System.Drawing.Graphics]::FromImage($zb); $zg.InterpolationMode = 'NearestNeighbor'
     $zg.DrawImage($bmp, (New-Object System.Drawing.Rectangle 0,0,($z[3]*$z[5]),($z[4]*$z[5])), (New-Object System.Drawing.Rectangle $z[1],$z[2],$z[3],$z[4]), 'Pixel')

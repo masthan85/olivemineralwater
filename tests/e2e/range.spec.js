@@ -15,6 +15,10 @@ const oldPhotos = /(classic-olive|forest-reserve|sapphire-blue|aqua-spring|mount
 // uses a copy cropped without it (olive-emerald-green-750ml-330ml.jpg).
 const plaquePhoto = /SD-Emerald-Green-2-Glass-Bottles/;
 
+// The client's originals with blue "Product of United Kingdom" banners; the
+// site uses edited copies with lettering in the label's own colours.
+const bannerPhotos = /SD-(Olive-Green|Dark-Green|Deep-Sapphire)-Glass-Bottle|olive-emerald-green-750ml(-330ml)?\.jpg/;
+
 test.beforeEach(({}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop', 'runs once, on desktop');
 });
@@ -34,7 +38,7 @@ for (const path of pages) {
     const sources = await page.locator('main img').evaluateAll(
       (imgs) => imgs.map((img) => img.currentSrc || img.src),
     );
-    const old = sources.filter((src) => oldPhotos.test(src) || plaquePhoto.test(src));
+    const old = sources.filter((src) => oldPhotos.test(src) || plaquePhoto.test(src) || bannerPhotos.test(src));
     expect(old, 'photos of the old bottle').toEqual([]);
   });
 }
