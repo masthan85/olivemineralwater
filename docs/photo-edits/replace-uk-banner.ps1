@@ -71,6 +71,8 @@ function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $search
   $fit[0] -= ($goldIn - $goldOut) / 2.0
   "$name : $($pts.Count) edge points, curve a=$([Math]::Round($fit[0],1)) b=$([Math]::Round($fit[1],4)) c=$([Math]::Round($fit[2],5)), border $($goldIn - $goldOut + 1) px gold, profile $([Math]::Round($insideHalf,1)) in / $([Math]::Round($outsideHalf,1)) out"
 
+  # A label with no banner (my2 < my1) only gets the lettering.
+  if ($my2 -ge $my1) {
   # 2. Label green per column just above the banner. Columns hidden by text
   #    are skipped, then the colours are smoothed across a 25 px window so the
   #    label's shading survives but no stripes do.
@@ -137,6 +139,7 @@ function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $search
       $bmp.SetPixel($x, $y, $col)
     }
   }
+  }
   # 4. Lettering along the curve, centred, sitting just above the gold edge.
   if (-not $NoText) {
     $g = [System.Drawing.Graphics]::FromImage($bmp)
@@ -152,7 +155,15 @@ function FixLabel($name, $mx1, $mx2, $my1, $my2, $lx1, $lx2, $searchTop, $search
       $m = $x + $widths[$i] / 2; $d = $m - $cx
       $cosT = 1.0 / [Math]::Sqrt(1 + [Math]::Pow($fit[1] + 2*$fit[2]*$d, 2))
       $gap = [Math]::Max(2.5, $textSize * 0.3)
-      $yb = $fit[0] + $fit[1]*$d + $fit[2]*$d*$d - ($insideHalf + $gap) / $cosT
+      if ($my2 -ge $my1) {
+        $yb = $fit[0] + $fit[1]*$d + $fit[2]*$d*$d - ($insideHalf + $gap) / $cosT
+      } else {
+        # Lettering-only labels: measure up from the border's bottom edge,
+        # allowing a border at least as thick as it looks at this text size
+        # (dark gold is not always detected), plus the inner shadow and gap.
+        $bottomEdge = $fit[0] + ($goldIn - $goldOut) / 2.0 + $fit[1]*$d + $fit[2]*$d*$d
+        $yb = $bottomEdge - ([Math]::Max($goldIn - $goldOut + 1, 0.75 * $textSize) + 3 + $gap) / $cosT
+      }
       $ang = [Math]::Atan($fit[1] + 2*$fit[2]*$d) * 180 / [Math]::PI
       $st = $g.Save(); $g.TranslateTransform([float]$m, [float]$yb); $g.RotateTransform([float]$ang)
       $g.DrawString([string]$text[$i], $font, $brush, [float](-$widths[$i]/2), [float](-$asc), $fmt); $g.Restore($st)
@@ -169,6 +180,14 @@ $script:ink = [System.Drawing.Color]::FromArgb(230, 212, 158)
 
 $white = [System.Drawing.Color]::FromArgb(236, 240, 247)
 switch -Wildcard ($In) {
+  # Big labels that never had a banner: lettering only (empty banner area,
+  # x1 = x2 = the label's centre). Run on the already edited photos.
+  # These come first and stop with break, because -Wildcard is not
+  # case-sensitive and *Olive-Green* would also match these names.
+  #                                       centre    no area   label x1 x2  search y  size spacing  profile y, inside x
+  '*classic-olive-green-750ml-v2*'  { FixLabel 'big'  303 303   1 0       110 496   780 832   12   1.6   700 140; break }
+  '*forest-reserve-750ml-v2*'       { FixLabel 'big'  288 288   1 0       100 476   808 862   12   1.6   740 130; break }
+  '*deep-sapphire-blue-750ml-v2*'   { FixLabel 'big'  309 309   1 0       112 506   780 832   12   1.6   700 140  $white; break }
   '*merald*' {
     #        name     banner x1 x2   y1  y2   label x1 x2  search y  size spacing  profile y, inside x
     FixLabel 'big'    176 447  784 820   118 505   770 845   12   1.6   610 135

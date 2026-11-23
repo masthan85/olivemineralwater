@@ -61,9 +61,9 @@ WooCommerce 11.3 and Nextend Social Login (free) are installed on the live site.
 
 | ID | Product | Photo (media item) | Status |
 |---|---|---|---|
-| 66 | Classic Olive Green (750ml) | 147 | Draft, no price |
-| 67 | Dark Green - Forest Reserve (750ml) | 148 | Draft, no price |
-| 68 | Deep Sapphire Blue (750ml) | 149 | Draft, no price |
+| 66 | Classic Olive Green (750ml) | 153 | Draft, no price |
+| 67 | Dark Green - Forest Reserve (750ml) | 154 | Draft, no price |
+| 68 | Deep Sapphire Blue (750ml) | 155 | Draft, no price |
 | 69 | Emerald Green Spring (750ml) | 146 | Draft, no price |
 | 70 | Emerald Green Spring (330ml) | 145 | Draft, no price |
 
