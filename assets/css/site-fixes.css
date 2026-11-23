@@ -65,12 +65,14 @@ figure.about-photo { margin-block: 0; }
 .bottle-card {
   display: flex !important;
   flex-direction: column;
-  height: 100%;
+}
+.bottle-card > figure {
+  flex: 0 0 auto;
 }
 .bottle-card > .bottle-info {
   display: flex !important;
   flex-direction: column;
-  flex: 1 1 auto;
+  flex: 1 0 auto;
 }
 .bottle-card .bottle-title {
   display: block !important;
@@ -84,7 +86,12 @@ figure.about-photo { margin-block: 0; }
 .bottle-card .bottle-info > p {
   margin-top: 12px;
 }
-.bottle-card .bottle-info > p:has(> a.text-link) {
+/* The link's paragraph renders as display: contents, so the link itself is
+   the flex item that gets pushed to the bottom. */
+.bottle-card .bottle-info > p:not(:has(a.text-link)) {
+  margin-bottom: 16px;
+}
+.bottle-card .bottle-info a.text-link {
   margin-top: auto;
-  padding-top: 16px;
+  align-self: flex-start;
 }
