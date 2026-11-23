@@ -16,7 +16,8 @@ The pages, menus, images and forms are edited in WordPress itself, not here.
 | `assets/pwa/` | The app: manifest, icons, service worker, offline page and the Google Play verification file. See [docs/APP.md](docs/APP.md). |
 | `docs/WORDPRESS.md` | How the WordPress site is set up, and what is still open. |
 | `docs/superpowers/` | The design and build plan for the online shop. |
-| `.github/workflows/` | Checks run on every push: PHP syntax and the Fortify scan. |
+| `tests/e2e/`, `playwright.config.js`, `package.json` | Playwright tests for the live site. Not part of the plugin. |
+| `.github/workflows/` | Checks run on every push: PHP syntax, the Fortify scan, and the Playwright tests. |
 
 ## Install or update the plugin
 
@@ -42,6 +43,31 @@ The plugin sends these addresses to the right page with a permanent (301) redire
 | `/login.html`, `/operations.html`, `/ops-*.html` | `/login/` |
 
 The `.html` addresses are from the previous version of the site. The `-query-` pages were duplicates created when that site was imported into WordPress.
+
+## Testing the site with Playwright
+
+The tests in `tests/e2e/` open the live site in Chromium at desktop (1440px) and phone (390px) sizes and check:
+
+- every page loads with its heading, fits the screen, shows the logo, has no broken images and has link-preview tags
+- the header stays green and in front of the page while scrolling, and the menus work
+- the Order, Trade Enquiry, Track, My Account and Staff sign-in forms are complete (the tests never submit a form, so they send no emails)
+- the redirects, the app manifest, the service worker, the offline page and `assetlinks.json`
+
+Page wording is edited in WordPress by the client, so the tests check headings loosely and do not check the text.
+
+Run them on your computer (needs Node.js):
+
+```sh
+npm install
+npx playwright install chromium
+npm test                 # all tests
+npm run test:report      # open the last report
+BASE_URL=https://staging-example.wpcomstaging.com npm test   # test another copy
+```
+
+On GitHub they run 4 minutes after every push to `main` (once the plugin has deployed), every morning at 06:00 UTC, and on demand from **Actions → Test the live site → Run workflow**. Each run keeps an HTML report as a download for 14 days.
+
+These files are also copied to the plugin folder on the site when `main` deploys. WordPress ignores them.
 
 ## Backups
 

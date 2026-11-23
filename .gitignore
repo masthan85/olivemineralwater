@@ -4,3 +4,9 @@ data/
 .env
 .env.*
 .claude/
+
+# Playwright
+node_modules/
+test-results/
+playwright-report/
+blob-report/

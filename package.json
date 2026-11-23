@@ -1,0 +1,13 @@
+{
+  "name": "olive-site-tests",
+  "private": true,
+  "description": "Playwright tests for olivemineralwater.co.uk. Not part of the WordPress plugin.",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1"
+  }
+}
