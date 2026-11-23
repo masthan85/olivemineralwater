@@ -1,5 +1,7 @@
 # OLIVE WordPress Shop (Phase 1) Implementation Plan
 
+> **Status (23 Nov 2026):** historical. The shop was built on the live site (blog ID `258777266`), not this preview site. The range is now glass only in 330ml and 750ml with four labels, and the accounts package is FreeAgent, not Xero. For the current set-up see [docs/WORDPRESS.md](../../WORDPRESS.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Turn the WordPress.com preview site into a phone-first WooCommerce shop that sells OLIVE's seven products with card payment.

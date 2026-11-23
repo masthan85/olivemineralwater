@@ -1,39 +1,83 @@
 # OLIVE on WordPress.com
 
+Last reviewed: 23 November 2026.
+
 ## The sites
 
 | Site | Address | Blog ID | Plan | Use |
 |---|---|---|---|---|
-| Live | `olivemineralwater.co.uk` | `258777266` | Premium | The public website |
-| Preview | `shiny-moon-cherryblossom.wpcomstaging.com` | `258624640` | Free | Where the WooCommerce shop was first built and tested |
+| Live | `olivemineralwater.co.uk` | `258777266` | Premium | The public website and shop |
+| Preview | `shiny-moon-cherryblossom.wpcomstaging.com` | `258624640` | Free | Where the shop was first tried out. Not used any more; it expires if no plan is bought. |
 
 The live site was built by importing the previous Vercel site, so its theme (`olivemineralwater-co-uk`) and page layouts come from that import. Edit pages in the WordPress editor.
 
+The client edits page wording in WordPress too. Before rewriting a whole page, check its last-modified time so their changes are not overwritten.
+
 ## What the OLIVE Site plugin does
 
-- Loads `assets/css/site-fixes.css`. The import wraps images in figures that do not take part in layout, which left the header logo at its full 1311px width. These rules size the logo and photos directly. On screens 1280px and wider, content grows from the theme's 1120px to 1400px.
-- The site icon (browser tab and bookmarks) is the olive branch, media item 80 (`olive-site-icon.png`, the same image as `assets/pwa/icon-512.png`). It is set under Settings → General, not by the plugin.
-- Loads `assets/css/shop.css` once WooCommerce is installed.
-- Redirects the previous site's `.html` addresses and the import's duplicate pages. See the README for the list.
+The plugin is this repository (`olive-site.php` and `assets/`). It deploys automatically: GitHub Deployment 9647 copies `main` to `/wp-content/plugins/olive-site` on every push.
 
-## Pages on the live site (as of 2026-11-19)
+| Feature | Where |
+|---|---|
+| Logo and photo sizing (the import left the logo at 1311px wide), a solid green header that stays on top while scrolling, content up to 1400px wide on large screens, and the bottle cards' layout (name, sizes, description, then the request link lined up at the bottom) | `assets/css/site-fixes.css`, every page |
+| The About page's "From rain to bottle" section | `assets/css/about.css` |
+| Phone-first WooCommerce styles | `assets/css/shop.css`, while WooCommerce is active |
+| My Account and Staff sign-in layouts | `assets/css/account.css` |
+| Customer account creation always on (email only; WooCommerce emails a link to set a password) and plainer wording ("Sign in", "Create an account") | `olive-site.php` |
+| `[olive_social_login]` shortcode: shows Nextend Social Login's buttons once a provider is set up, and nothing before that | `olive-site.php` |
+| Redirects for the old `.html` addresses and the import's duplicate pages | `olive-site.php`, listed in the README |
+| The installable app: manifest, icons, service worker, offline page and `/.well-known/assetlinks.json` | `assets/pwa/`, see [APP.md](APP.md) |
+| Link-preview tags (title, address and the bottle photo) for WhatsApp, Facebook, LinkedIn and X | `olive-site.php`, skipped if Jetpack prints its own |
+
+Set in WordPress, not by the plugin:
+
+- **Site icon:** the olive branch, media item 80 (`olive-site-icon.png`, the same image as `assets/pwa/icon-512.png`). Settings → General.
+- **Menus:** header navigation 13 and footer navigation 14.
+
+## Product range
+
+Glass bottles only, in **330ml and 750ml**, with four label finishes: Classic Olive Green, Dark Green – Forest Reserve, Deep Sapphire Blue and Emerald Green Spring. Plastic bottles and the 250ml, 500ml and 1 litre sizes are no longer sold (confirmed by the client on 23 November 2026). The Playwright tests fail if a page mentions them again.
+
+The bottle photos are edited copies of the client's originals. See [photo-edits/README.md](photo-edits/README.md) for which image is used where.
+
+## Pages
 
 | Page | How it works |
 |---|---|
-| Home, Products, About, Delivery & Help | Content pages. |
-| Order | A Jetpack form. Each request is emailed to the site's admin email and kept under **Feedback** in wp-admin. |
-| Trade Enquiry | A Jetpack form, as above. |
-| Track Order | A Jetpack form asking for the order reference, postcode and email. The team replies by email. There is no automatic lookup. |
-| My Account (`/my-account/`) | WooCommerce's account page: sign in, order history and saved addresses. The `[olive_social_login]` shortcode shows Nextend Social Login's "Continue with Google" button once Google is set up in Nextend. The old `/account/` page redirects here. The plugin always shows **Sign in** and **Create an account** side by side: a new customer enters only an email address and is emailed a link to set a password. |
-| Staff sign-in (`/login/`) | A single card with the WordPress sign-in form; staff go to wp-admin after signing in. |
-| Staff sign-in | The WordPress login. Staff use their WordPress.com account. |
-| `order-query-1` to `-4`, `account-query-1` | Duplicates left by the import. The plugin redirects them; they can be moved to the bin once the plugin is active. |
+| Home (15), Products (26), About (16), Delivery & Help (19) | Content pages. Home and Products show the four bottle cards. |
+| Order (21) | A Jetpack form. Requests are kept in wp-admin under **Jetpack → Forms** (also called Feedback) and emailed to the page's author, the admin account `aijazahmeduk`. The page shows `service@olivemineralwater.co.uk` as the contact address. |
+| Trade Enquiry (28) | A Jetpack form, as above. |
+| Track Order (27) | A Jetpack form asking for the order reference, postcode and email. The team replies by email; there is no automatic lookup. |
+| My Account (64, `/my-account/`) | WooCommerce's account page with Sign in and Create an account side by side. The old `/account/` page redirects here. |
+| Staff sign-in (20, `/login/`) | A single card with the WordPress sign-in form. Staff sign in with their WordPress.com account and go to wp-admin. |
+| Shop (61), Basket (62), Checkout (63) | Created by WooCommerce. Empty until products are published. |
+| `order-query-1` to `-4`, `account-query-1`, `account` (17) | Left over from the import. The plugin redirects them; they can be moved to the bin. |
 
-Form emails go to the site's admin email. To send them to `hello@olivemineralwater.co.uk` instead, set that address in each form's settings in the editor once the mailbox exists.
+To send form emails somewhere else, set the address in each form's settings in the editor, once that mailbox exists.
+
+## Shop (WooCommerce)
+
+WooCommerce 11.3 and Nextend Social Login (free) are installed on the live site. Product categories: Signature Glass (17) and Still Water (18).
+
+| ID | Product | Photo (media item) | Status |
+|---|---|---|---|
+| 66 | Classic Olive Green (750ml) | 147 | Draft, no price |
+| 67 | Dark Green - Forest Reserve (750ml) | 148 | Draft, no price |
+| 68 | Deep Sapphire Blue (750ml) | 149 | Draft, no price |
+| 69 | Emerald Green Spring (750ml) | 146 | Draft, no price |
+| 70 | Emerald Green Spring (330ml) | 145 | Draft, no price |
+
+Products 71 and 72 (the old 500ml and 1 litre bottles) are in the bin.
+
+The WordPress.com connector cannot set prices, stock, currency, tax, delivery or payments. Those are set in wp-admin under **WooCommerce → Settings** and on each product.
 
 ## Still to do
 
-1. **Online shop.** WooCommerce and the seven products (drafts, no prices) are on the live site since 2026-11-19. Set it up as in the build plan (`docs/superpowers/plans/2026-11-16-wordpress-shop.md`): UK, GBP and VAT, prices and stock, delivery area, card payments in test mode, then live.
-2. **Customer accounts.** WooCommerce provides My Account with order history. Sign-in with Google, Microsoft or Apple needs a social login plugin. Check its price before installing.
-3. **Policy pages.** Delivery, returns, privacy and terms, from the client's own terms.
-4. **Retire the old services.** Delete the Vercel project and pause the Supabase project. Nothing on the live site uses them.
+1. **Shop settings (client, in wp-admin).** Currency GBP (it is still USD), UK address, VAT (bottled water is usually standard-rated; confirm with the accountant), delivery area and charges.
+2. **Products (client).** Prices and opening stock; then publish. Add 330ml products for Classic Olive Green, Forest Reserve and Deep Sapphire Blue, which all come in 330ml too.
+3. **Payments (client).** A Stripe account connected through the free WooCommerce Stripe Gateway, plus bank transfer. Then point **Order Now** at the shop.
+4. **Trade invoicing and FreeAgent.** Pay-by-invoice for approved trade customers and an order-to-FreeAgent link, both planned for the OLIVE Site plugin.
+5. **Google sign-in (client).** Create the Google OAuth keys and enter them in Nextend Social Login.
+6. **Policy pages.** Privacy policy (also needed for Google Play), delivery, returns and terms.
+7. **Google Play.** See [APP.md](APP.md).
+8. **Tidy up.** Move the import's duplicate pages to the bin, delete unused media (the earlier photo versions listed in the photo-edits notes), delete the Vercel project and pause the Supabase project.

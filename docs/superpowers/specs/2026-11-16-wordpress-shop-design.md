@@ -1,5 +1,7 @@
 # OLIVE online shop on WordPress — design
 
+> **Status (23 Nov 2026):** historical. The shop was built on the live site (blog ID `258777266`), not this preview site. The range is now glass only in 330ml and 750ml with four labels, and the accounts package is FreeAgent, not Xero. For the current set-up see [docs/WORDPRESS.md](../../WORDPRESS.md).
+
 Date: 2026-11-16. Status: awaiting approval.
 
 ## Intent
