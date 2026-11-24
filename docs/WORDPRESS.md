@@ -1,6 +1,6 @@
 # OLIVE on WordPress.com
 
-Last reviewed: 23 November 2026.
+Last reviewed: 24 November 2026.
 
 ## The sites
 
@@ -57,7 +57,11 @@ To send form emails somewhere else, set the address in each form's settings in t
 
 ## Shop (WooCommerce)
 
-WooCommerce 11.3 and Nextend Social Login (free) are installed on the live site. Product categories: Signature Glass (17) and Still Water (18).
+WooCommerce 11.3.1 and Nextend Social Login (free) are installed on the live site. The store currency is GBP (£). Product categories: Signature Glass (17) and Still Water (18).
+
+**Transaction fees.** WordPress.com support confirmed on 24 November 2026 that the Premium plan's 4% fee applies only to WordPress.com's own payment blocks (Payments Button, Donations, Paid Content, paid newsletters). It does not apply to WooCommerce orders paid through the Stripe Gateway or WooPayments. Those orders pay only Stripe's or WooPayments' own card fees. So take payments through WooCommerce, not the Payments block.
+
+**Payment plugins.** WooPayments and WooCommerce PayPal Payments are installed and active, as well as the Stripe Gateway. Use one card gateway (Stripe was the plan) and deactivate the others, so checkout doesn't offer the same payment method twice.
 
 | ID | Product | Photo (media item) | Status |
 |---|---|---|---|
@@ -73,7 +77,7 @@ The WordPress.com connector cannot set prices, stock, currency, tax, delivery or
 
 ## Still to do
 
-1. **Shop settings (client, in wp-admin).** Currency GBP (it is still USD), UK address, VAT (bottled water is usually standard-rated; confirm with the accountant), delivery area and charges.
+1. **Shop settings (client, in wp-admin).** The currency is already GBP. Still to set: UK address, VAT (bottled water is usually standard-rated; confirm with the accountant), delivery area and charges.
 2. **Products (client).** Prices and opening stock; then publish. Add 330ml products for Classic Olive Green, Forest Reserve and Deep Sapphire Blue, which all come in 330ml too.
 3. **Payments (client).** A Stripe account connected through the free WooCommerce Stripe Gateway, plus bank transfer. Then point **Order Now** at the shop.
 4. **Trade invoicing and FreeAgent.** Pay-by-invoice for approved trade customers and an order-to-FreeAgent link, both planned for the OLIVE Site plugin.
