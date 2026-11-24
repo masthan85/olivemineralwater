@@ -9,6 +9,7 @@ The pages, menus, images, forms and products are edited in WordPress itself, not
 | Path | What it holds |
 |---|---|
 | `olive-site.php` | The plugin: loads the stylesheets, turns on customer account creation, redirects old and duplicate addresses, serves the app files and adds link-preview tags. |
+| `includes/order-requests.php` | Turns each Order page request into a WooCommerce order that starts On hold. See [docs/WORDPRESS.md](docs/WORDPRESS.md#order-requests). |
 | `assets/css/site-fixes.css` | Every page: logo and photo sizing, the solid sticky header, the wider layout on large screens, and the bottle cards' layout. |
 | `assets/css/about.css` | The About page's "From rain to bottle" section. |
 | `assets/css/shop.css` | Phone-first styles for the WooCommerce shop pages, loaded only while WooCommerce is active. |
@@ -32,7 +33,7 @@ Then activate **OLIVE Site** once under **Plugins**. Bump the version in both th
 
 WordPress.com caches pages for about 5 minutes, so a change can take that long to show.
 
-**By hand.** Zip a folder named `olive-site` that contains `olive-site.php` and `assets/`, then upload it under **Plugins → Add New → Upload Plugin**.
+**By hand.** Zip a folder named `olive-site` that contains `olive-site.php`, `includes/` and `assets/`, then upload it under **Plugins → Add New → Upload Plugin**.
 
 ## Redirects
 
@@ -78,7 +79,7 @@ These files are also copied to the plugin folder on the site when `main` deploys
 - **Code:** the branch and tag `backup-2026-11-21` on GitHub hold the plugin exactly as it was live on 21 November 2026. They are never changed. To look at it or restore it: `git checkout backup-2026-11-21`.
 - **Website:** pages, products, orders, form entries, images and settings live in WordPress, not in this repository. WordPress.com backs up the whole site every day (Jetpack Backup, under **Jetpack → Backup** in the site dashboard), and any day can be restored from there.
 
-Keep the plugin files (`olive-site.php`, `assets/`) at the top of `main`: every push to `main` copies the top level of the repository into the live plugin folder.
+Keep the plugin files (`olive-site.php`, `includes/`, `assets/`) at the top of `main`: every push to `main` copies the top level of the repository into the live plugin folder.
 
 ## The previous Node.js app
 

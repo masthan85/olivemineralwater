@@ -3,7 +3,7 @@
  * Plugin Name:       OLIVE Site
  * Plugin URI:        https://github.com/masthan85/olivemineralwater
  * Description:       Layout fixes and redirects for the OLIVE Pure Mineral Water website.
- * Version:           1.1.9
+ * Version:           1.2.0
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            OLIVE Pure Mineral Water
@@ -15,7 +15,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const OLIVE_SITE_VERSION = '1.1.9';
+const OLIVE_SITE_VERSION = '1.2.0';
+require_once __DIR__ . '/includes/order-requests.php';
 
 /**
  * Stylesheets.

@@ -28,6 +28,7 @@ The plugin is this repository (`olive-site.php` and `assets/`). It deploys autom
 | Redirects for the old `.html` addresses and the import's duplicate pages | `olive-site.php`, listed in the README |
 | The installable app: manifest, icons, service worker, offline page and `/.well-known/assetlinks.json` | `assets/pwa/`, see [APP.md](APP.md) |
 | Link-preview tags (title, address and the bottle photo) for WhatsApp, Facebook, LinkedIn and X | `olive-site.php`, skipped if Jetpack prints its own |
+| Order page requests become WooCommerce orders (see below) | `includes/order-requests.php` |
 
 Set in WordPress, not by the plugin:
 
@@ -45,7 +46,7 @@ The bottle photos are edited copies of the client's originals. See [photo-edits/
 | Page | How it works |
 |---|---|
 | Home (15), Products (26), About (16), Delivery & Help (19) | Content pages. Home and Products show the four bottle cards. |
-| Order (21) | A Jetpack form. Requests are kept in wp-admin under **Jetpack → Forms** (also called Feedback) and emailed to the page's author, the admin account `aijazahmeduk`. The page shows `service@olivemineralwater.co.uk` as the contact address. |
+| Order (21) | A Jetpack form. Each request is kept under **Jetpack → Forms** and emailed to the page's author, the admin account `aijazahmeduk`, as before. Since plugin 1.2.0 it also becomes a WooCommerce order (see "Order requests" below). The page shows `service@olivemineralwater.co.uk` as the contact address. |
 | Trade Enquiry (28) | A Jetpack form, as above. |
 | Track Order (27) | A Jetpack form asking for the order reference, postcode and email. The team replies by email; there is no automatic lookup. |
 | My Account (64, `/my-account/`) | WooCommerce's account page with Sign in and Create an account side by side. The old `/account/` page redirects here. |
@@ -54,6 +55,38 @@ The bottle photos are edited copies of the client's originals. See [photo-edits/
 | `order-query-1` to `-4`, `account-query-1`, `account` (17) | Left over from the import. The plugin redirects them; they can be moved to the bin. |
 
 To send form emails somewhere else, set the address in each form's settings in the editor, once that mailbox exists.
+
+## Order requests
+
+Every request sent from the Order page also becomes an order in **WooCommerce → Orders**, so the team can see what has been received, who is dealing with it and what has been done.
+
+| Status | Meaning |
+|---|---|
+| On hold | New request. Nothing is agreed or paid yet. WooCommerce emails its "New order" message to the address in WooCommerce → Settings → Emails. |
+| Processing | Price and delivery day confirmed with the customer; to be packed and delivered. |
+| Completed | Delivered. |
+| Cancelled | The customer changed their mind, or the area is not covered. |
+
+What the order holds:
+
+- The customer's name, email, phone, delivery address and postcode (country GB). If a customer account has that email, the order is linked to the account and appears under the customer's My Account.
+- Their "What would you like?" text as the customer note.
+- Bottle lines where the request is clear, for example "12 × Classic Olive Green (750ml)". A line is added only when the quantity, label and size all match one shop product. Anything else, for example a 330ml size that has no product yet, stays in the note for staff to add.
+- An order note giving the Jetpack entry number. The entry is also tagged with the order number, so either one leads to the other.
+- Origin `olive-order-form`.
+
+The customer gets no WooCommerce email when the order is created, because WooCommerce's "on hold" email talks about confirming payment. Staff reply to confirm the price and day. Until products have prices, bottle lines show £0, so staff set the price on each line before confirming.
+
+**Staff fulfilment:**
+
+1. Open **WooCommerce → Orders** and filter by **On hold**.
+2. Check the bottles against the customer note, add or adjust lines and prices, then **Recalculate**.
+3. Email the customer to confirm, and record what was agreed with **Add note**. A note can be private or go to the customer.
+4. Change the status to **Processing**, and to **Completed** once delivered.
+
+Give staff the **Shop manager** role (Users → Add new user). They can then work on orders without access to the rest of the site's settings.
+
+Trade Enquiry (28) and Track Order (27) stay as Jetpack forms only.
 
 ## Shop (WooCommerce)
 
