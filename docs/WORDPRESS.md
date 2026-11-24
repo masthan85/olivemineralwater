@@ -29,6 +29,7 @@ The plugin is this repository (`olive-site.php` and `assets/`). It deploys autom
 | The installable app: manifest, icons, service worker, offline page and `/.well-known/assetlinks.json` | `assets/pwa/`, see [APP.md](APP.md) |
 | Link-preview tags (title, address and the bottle photo) for WhatsApp, Facebook, LinkedIn and X | `olive-site.php`, skipped if Jetpack prints its own |
 | Order page requests become WooCommerce orders (see below) | `includes/order-requests.php` |
+| Order and Trade Enquiry form emails go to `service@olivemineralwater.co.uk` instead of the page author's personal address. A recipient set in the form's own settings still wins. | `includes/form-emails.php` |
 
 Set in WordPress, not by the plugin:
 
@@ -46,15 +47,15 @@ The bottle photos are edited copies of the client's originals. See [photo-edits/
 | Page | How it works |
 |---|---|
 | Home (15), Products (26), About (16), Delivery & Help (19) | Content pages. Home and Products show the four bottle cards. |
-| Order (21) | A Jetpack form. Each request is kept under **Jetpack → Forms** and emailed to the page's author, the admin account `aijazahmeduk`, as before. Since plugin 1.2.0 it also becomes a WooCommerce order (see "Order requests" below). The page shows `service@olivemineralwater.co.uk` as the contact address. |
-| Trade Enquiry (28) | A Jetpack form, as above. |
+| Order (21) | A Jetpack form. Each request is kept under **Jetpack → Forms** and emailed to `service@olivemineralwater.co.uk` (since plugin 1.2.1). Since plugin 1.2.0 it also becomes a WooCommerce order (see "Order requests" below). The page shows `service@olivemineralwater.co.uk` as the contact address. |
+| Trade Enquiry (28) | A Jetpack form. Requests are kept under **Jetpack → Forms** and emailed to `service@olivemineralwater.co.uk`. |
 | Track Order (27) | A Jetpack form asking for the order reference, postcode and email. The team replies by email; there is no automatic lookup. |
 | My Account (64, `/my-account/`) | WooCommerce's account page with Sign in and Create an account side by side. The old `/account/` page redirects here. |
 | Staff sign-in (20, `/login/`) | A single card with the WordPress sign-in form. Staff sign in with their WordPress.com account and go to wp-admin. |
 | Shop (61), Basket (62), Checkout (63) | Created by WooCommerce. Empty until products are published. |
 | `order-query-1` to `-4`, `account-query-1`, `account` (17) | Left over from the import. The plugin redirects them; they can be moved to the bin. |
 
-To send form emails somewhere else, set the address in each form's settings in the editor, once that mailbox exists.
+To send form emails somewhere else, set the address in the form's settings in the editor (select the form, then **Form settings → Email**), or change `OLIVE_SERVICE_EMAIL` in `includes/form-emails.php`. WooCommerce's own "New order" email goes to the address set under **WooCommerce → Settings → Emails → New order**, so set `service@` there too.
 
 ## Order requests
 

@@ -10,6 +10,7 @@ The pages, menus, images, forms and products are edited in WordPress itself, not
 |---|---|
 | `olive-site.php` | The plugin: loads the stylesheets, turns on customer account creation, redirects old and duplicate addresses, serves the app files and adds link-preview tags. |
 | `includes/order-requests.php` | Turns each Order page request into a WooCommerce order that starts On hold. See [docs/WORDPRESS.md](docs/WORDPRESS.md#order-requests). |
+| `includes/form-emails.php` | Sends the Order and Trade Enquiry form emails to `service@olivemineralwater.co.uk`. |
 | `assets/css/site-fixes.css` | Every page: logo and photo sizing, the solid sticky header, the wider layout on large screens, and the bottle cards' layout. |
 | `assets/css/about.css` | The About page's "From rain to bottle" section. |
 | `assets/css/shop.css` | Phone-first styles for the WooCommerce shop pages, loaded only while WooCommerce is active. |
