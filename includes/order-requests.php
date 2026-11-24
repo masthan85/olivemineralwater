@@ -156,15 +156,23 @@ function olive_site_split_name( string $name ): array {
  * @return int How many lines were added.
  */
 function olive_site_add_requested_bottles( \WC_Order $order, string $wanted ): int {
-	$products = wc_get_products(
+	// get_posts rather than wc_get_products: products saved without a product
+	// type are skipped by wc_get_products but still load with wc_get_product.
+	$ids = get_posts(
 		array(
-			'status' => array( 'publish', 'draft', 'private' ),
-			'limit'  => 50,
+			'post_type'      => 'product',
+			'post_status'    => array( 'publish', 'draft', 'private' ),
+			'posts_per_page' => 50,
+			'fields'         => 'ids',
 		)
 	);
 
 	$catalogue = array();
-	foreach ( $products as $product ) {
+	foreach ( $ids as $id ) {
+		$product = wc_get_product( $id );
+		if ( ! $product ) {
+			continue;
+		}
 		$name = olive_site_simplify( $product->get_name() );
 		if ( ! preg_match( '/(\d+)\s*ml/', $name, $size ) ) {
 			continue;
