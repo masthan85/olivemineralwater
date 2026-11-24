@@ -61,7 +61,7 @@ WooCommerce 11.3.1 and Nextend Social Login (free) are installed on the live sit
 
 **Transaction fees.** WordPress.com support confirmed on 24 November 2026 that the Premium plan's 4% fee applies only to WordPress.com's own payment blocks (Payments Button, Donations, Paid Content, paid newsletters). It does not apply to WooCommerce orders paid through the Stripe Gateway or WooPayments. Those orders pay only Stripe's or WooPayments' own card fees. So take payments through WooCommerce, not the Payments block.
 
-**Payment plugins.** WooPayments and WooCommerce PayPal Payments are installed and active, as well as the Stripe Gateway. Use one card gateway (Stripe was the plan) and deactivate the others, so checkout doesn't offer the same payment method twice.
+**Payment plugins.** WooPayments and WooCommerce PayPal Payments are installed and active, as well as the Stripe Gateway. All three are kept for now (decided 24 November 2026). When payments are set up, turn on card payments in only one of them, so checkout doesn't offer card payment twice.
 
 | ID | Product | Photo (media item) | Status |
 |---|---|---|---|
