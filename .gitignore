@@ -10,3 +10,5 @@ node_modules/
 test-results/
 playwright-report/
 blob-report/
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
