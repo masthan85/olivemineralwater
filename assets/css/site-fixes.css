@@ -95,3 +95,19 @@ figure.about-photo { margin-block: 0; }
   margin-top: auto;
   align-self: flex-start;
 }
+
+/* Five bottle cards (Pure White joined the range on 25 November 2026). The
+   theme's grid is four across, which would leave the fifth card alone on a
+   second row: show five across on wide screens and three across on medium
+   ones. Phones keep the theme's two across. */
+@media (min-width: 1200px) {
+  .bottle-grid:has(> .bottle-card:nth-child(5)) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+@media (min-width: 981px) and (max-width: 1199px) {
+  .bottle-grid:has(> .bottle-card:nth-child(5)) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

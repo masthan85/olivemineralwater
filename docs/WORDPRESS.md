@@ -38,7 +38,7 @@ Set in WordPress, not by the plugin:
 
 ## Product range
 
-Glass bottles only, in **330ml and 750ml**, with four label finishes: Classic Olive Green, Dark Green – Forest Reserve, Deep Sapphire Blue and Emerald Green Spring. Plastic bottles and the 250ml, 500ml and 1 litre sizes are no longer sold (confirmed by the client on 23 November 2026). The Playwright tests fail if a page mentions them again.
+Glass bottles only, in **330ml and 750ml**, with five label finishes: Classic Olive Green, Dark Green – Forest Reserve, Deep Sapphire Blue, Emerald Green Spring and Pure White (added 25 November 2026). Plastic bottles and the 250ml, 500ml and 1 litre sizes are no longer sold (confirmed by the client on 23 November 2026). The Playwright tests fail if a page mentions them again.
 
 The bottle photos are edited copies of the client's originals. See [photo-edits/README.md](photo-edits/README.md) for which image is used where.
 
@@ -46,7 +46,7 @@ The bottle photos are edited copies of the client's originals. See [photo-edits/
 
 | Page | How it works |
 |---|---|
-| Home (15), Products (26), About (16), Delivery & Help (19) | Content pages. Home and Products show the four bottle cards. |
+| Home (15), Products (26), About (16), Delivery & Help (19) | Content pages. Home and Products show the five bottle cards. |
 | Order (21) | A Jetpack form. Each request is kept under **Jetpack → Forms** and emailed to `service@olivemineralwater.co.uk` (since plugin 1.2.1). Since plugin 1.2.0 it also becomes a WooCommerce order (see "Order requests" below). The page shows `service@olivemineralwater.co.uk` as the contact address. |
 | Trade Enquiry (28) | A Jetpack form. Requests are kept under **Jetpack → Forms** and emailed to `service@olivemineralwater.co.uk`. |
 | Track Order (27) | A Jetpack form asking for the order reference, postcode and email. The team replies by email; there is no automatic lookup. |
@@ -104,6 +104,7 @@ WooCommerce 11.3.1 and Nextend Social Login (free) are installed on the live sit
 | 68 | Deep Sapphire Blue (750ml) | 193 | Draft, no price |
 | 69 | Emerald Green Spring (750ml) | 194 | Draft, no price |
 | 70 | Emerald Green Spring (330ml) | 195 | Draft, no price |
+| 202 | Pure White (750ml) | 201 | Draft, no price |
 
 Products 71 and 72 (the old 500ml and 1 litre bottles) are in the bin.
 

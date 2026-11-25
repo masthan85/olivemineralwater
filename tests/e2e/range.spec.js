@@ -80,8 +80,8 @@ test('every bottle card shows both sizes, then the description, then the link', 
   for (const path of ['/', '/products/']) {
     await page.goto(path);
     const cards = page.locator('.bottle-card');
-    await expect(cards, path).toHaveCount(4);
-    for (let i = 0; i < 4; i += 1) {
+    await expect(cards, path).toHaveCount(5);
+    for (let i = 0; i < 5; i += 1) {
       await expect(cards.nth(i).locator('.bottle-title mark'), `${path} card ${i + 1}`).toHaveText('330ml / 750ml');
     }
     // The size sits under the name, not beside it.

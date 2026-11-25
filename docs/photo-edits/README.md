@@ -12,6 +12,7 @@ The bottle photos on the site are edited copies of the client's originals. The o
 | 193 | `olive-deep-sapphire-blue-750ml-hd2.jpg` | Deep Sapphire Blue cards, About page photo, product 68 | `olive-deep-sapphire-blue-750ml-v3.jpg` (155) |
 | 194 | `olive-emerald-green-750ml-hd2.jpg` | Emerald Green Spring cards and product 69 | `SD-Emerald-Green-Glass-Bottle-750ml-Label.jpg` (164) |
 | 195 | `olive-emerald-green-750ml-330ml-hd2.jpg` | Products page Range photo, link previews, product 70 | `SDEMER1.jpg` (161) |
+| 201 | `olive-pure-white-750ml-hd2.jpg` | Pure White cards and product 202 | `SD-White-Glass-Bottle-750ml-Label.jpg` (174) |
 
 What the `-hd2` photos have:
 
