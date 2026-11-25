@@ -17,7 +17,7 @@ for L in C['labels']:
         r=im.astype(int); navy=((r[...,2]>r[...,0]+30)&(r[...,2]>r[...,1]+5)&(r.sum(-1)<450)).astype(np.uint8)
         roi=np.zeros_like(m); roi[y0-8:y1+8,x0-8:x1+8]=1
         m|=cv2.dilate(navy*roi*255,np.ones((7,7),np.uint8))
-        m[y1+3:y1+8,:]=0; m[:y0-3,:]=0; m=cv2.morphologyEx(m,cv2.MORPH_CLOSE,np.ones((5,5),np.uint8))
+        m[y1+3:y1+8,:]=0; m[:y0-L.get('top',3),:]=0; m=cv2.morphologyEx(m,cv2.MORPH_CLOSE,np.ones((5,5),np.uint8))
     im=inpaint(im,m)
 for L in C['labels']:
     if 'fix' in L:

@@ -120,7 +120,12 @@ def run(k, S=2.5, src_x4=None, out=None):
     s1=np.asarray(Image.open(f'work/{k}_s1.png').convert('RGB'))
     x4=Image.open(src_x4 or f'work/{k}_x4.png').convert('RGB')
     W,H=int(round(s1.shape[1]*S)),int(round(s1.shape[0]*S))
-    img=x4.resize((W,H),Image.LANCZOS).convert('RGBA')
+    img=x4.resize((W,H),Image.LANCZOS)
+    if C.get('specks'):  # tiny leftovers, in final-resolution pixels
+        a=np.asarray(img).copy(); m=np.zeros(a.shape[:2],np.uint8)
+        for x0,y0,x1,y1 in C['specks']: m[y0:y1,x0:x1]=255
+        img=Image.fromarray(cv2.inpaint(a,m,6,cv2.INPAINT_TELEA))
+    img=img.convert('RGBA')
     for L in C['labels']:
         c,pts=detect_curve(s1,L['guide'],L['xr'],sign=L.get('sign',1))
         cur=Curve(c,S)
