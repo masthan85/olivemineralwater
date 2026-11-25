@@ -99,11 +99,11 @@ WooCommerce 11.3.1 and Nextend Social Login (free) are installed on the live sit
 
 | ID | Product | Photo (media item) | Status |
 |---|---|---|---|
-| 66 | Classic Olive Green (750ml) | 182 | Draft, no price |
-| 67 | Dark Green - Forest Reserve (750ml) | 183 | Draft, no price |
-| 68 | Deep Sapphire Blue (750ml) | 184 | Draft, no price |
-| 69 | Emerald Green Spring (750ml) | 185 | Draft, no price |
-| 70 | Emerald Green Spring (330ml) | 186 | Draft, no price |
+| 66 | Classic Olive Green (750ml) | 191 | Draft, no price |
+| 67 | Dark Green - Forest Reserve (750ml) | 192 | Draft, no price |
+| 68 | Deep Sapphire Blue (750ml) | 193 | Draft, no price |
+| 69 | Emerald Green Spring (750ml) | 194 | Draft, no price |
+| 70 | Emerald Green Spring (330ml) | 195 | Draft, no price |
 
 Products 71 and 72 (the old 500ml and 1 litre bottles) are in the bin.
 

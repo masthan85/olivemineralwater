@@ -20,10 +20,11 @@ const plaquePhoto = /SD-Emerald-Green-2-Glass-Bottles/;
 const bannerPhotos = /SD-(Olive-Green|Dark-Green|Deep-Sapphire|Emerald-Green|White)-(2-)?Glass-Bottle|SDEMER1|SDDEEP1/i;
 
 // Earlier edits: v2 and v3 have capitals lettering with no flag, and the olive
-// sprig on the rock. The site uses the -hd photos, which are upscaled, have
-// "Product of United Kingdom" with the Union flag along each label's border,
-// and no olive sprig.
-const earlierEdits = /olive-(emerald-green-750ml(-330ml)?|classic-olive-green-750ml|forest-reserve-750ml|deep-sapphire-blue-750ml)(-v2|-v3)?(-\d+x\d+)?\.jpg/;
+// sprig on the rock; in -hd the lettering on some labels ran into the border
+// and the divider lines. The site uses the -hd2 photos: upscaled, with
+// "Product of United Kingdom" and the Union flag clear of the border and the
+// label's other text, and no olive sprig.
+const earlierEdits = /olive-(emerald-green-750ml(-330ml)?|classic-olive-green-750ml|forest-reserve-750ml|deep-sapphire-blue-750ml)(-v2|-v3|-hd)?(-\d+x\d+)?\.jpg/;
 
 test.beforeEach(({}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop', 'runs once, on desktop');
