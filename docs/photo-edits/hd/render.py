@@ -59,7 +59,7 @@ def paste_rot(base, sprite, cx, cy, ang):
     r=sprite.rotate(-math.degrees(ang),resample=Image.BICUBIC,expand=True)
     base.alpha_composite(r,(int(round(cx-r.width/2)),int(round(cy-r.height/2))))
 
-def draw_label(img, curve, x_center, width_px, ink):
+def draw_label(img, curve, x_center, width_px, ink, lift=0.0):
     """img RGBA final-res. width_px = target width of text+flag."""
     # find font size giving the target width
     size=40
@@ -75,7 +75,7 @@ def draw_label(img, curve, x_center, width_px, ink):
     capb=f.getbbox('H'); cap=(capb[3]-capb[1])/SS
     fh=cap*1.02; fw=fh*5/3; gap=0.42*size
     total=tw+gap+fw
-    base_off=desc*0.95+size*0.14  # baseline distance above the border's inner edge
+    base_off=desc*0.95+size*0.14+lift  # baseline distance above the border's inner edge
     at=place_on_curve(curve,x_center,total,base_off)
     if ink=='gold': top,bot,sh=(246,224,160),(205,163,84),(0,0,0,110)
     elif ink=='cream': top,bot,sh=(252,248,228),(226,214,170),(0,0,0,120)
@@ -129,9 +129,9 @@ def run(k, S=2.5, src_x4=None, out=None):
     for L in C['labels']:
         c,pts=detect_curve(s1,L['guide'],L['xr'],sign=L.get('sign',1))
         cur=Curve(c,S)
-        xc=S*(L['xr'][0]+L['xr'][1])/2
+        xc=S*L.get('xc',(L['xr'][0]+L['xr'][1])/2)
         frac=L.get('w',0.6)
-        draw_label(img,cur,xc,frac*S*(L['xr'][1]-L['xr'][0]),C['ink'])
+        draw_label(img,cur,xc,frac*S*(L['xr'][1]-L['xr'][0]),C['ink'],lift=S*L.get('lift',0))
     img=img.convert('RGB')
     img.save(out or f'work/{k}_final.png')
     return img

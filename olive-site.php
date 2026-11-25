@@ -3,7 +3,7 @@
  * Plugin Name:       OLIVE Site
  * Plugin URI:        https://github.com/masthan85/olivemineralwater
  * Description:       Layout fixes and redirects for the OLIVE Pure Mineral Water website.
- * Version:           1.2.3
+ * Version:           1.2.5
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            OLIVE Pure Mineral Water
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const OLIVE_SITE_VERSION = '1.2.3';
+const OLIVE_SITE_VERSION = '1.2.5';
 require_once __DIR__ . '/includes/order-requests.php';
 require_once __DIR__ . '/includes/form-emails.php';
 
@@ -257,7 +257,7 @@ function olive_site_link_preview_tags(): void {
 		return;
 	}
 
-	$image = home_url( '/wp-content/uploads/2026/11/olive-emerald-green-750ml-330ml-hd.jpg' );
+	$image = home_url( '/wp-content/uploads/2026/11/olive-emerald-green-750ml-330ml-hd2.jpg' );
 	if ( is_singular() && has_post_thumbnail() ) {
 		$image = (string) get_the_post_thumbnail_url( null, 'large' );
 	}

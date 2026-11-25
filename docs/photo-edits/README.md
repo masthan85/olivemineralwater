@@ -6,17 +6,18 @@ The bottle photos on the site are edited copies of the client's originals. The o
 
 | Media item | File | Used for | Made from |
 |---|---|---|---|
-| 187 | `olive-white-750ml-330ml-hd.jpg` | Home hero | `SD-White-2-Glass-Bottles-750ml-330ml-Label-final-1.jpg` (178) |
-| 182 | `olive-classic-olive-green-750ml-hd.jpg` | Classic Olive Green cards and product 66 | `olive-classic-olive-green-750ml-v3.jpg` (153) |
-| 183 | `olive-forest-reserve-750ml-hd.jpg` | Dark Green – Forest Reserve cards and product 67 | `olive-forest-reserve-750ml-v3.jpg` (154) |
-| 184 | `olive-deep-sapphire-blue-750ml-hd.jpg` | Deep Sapphire Blue cards, About page photo, product 68 | `olive-deep-sapphire-blue-750ml-v3.jpg` (155) |
-| 185 | `olive-emerald-green-750ml-hd.jpg` | Emerald Green Spring cards and product 69 | `SD-Emerald-Green-Glass-Bottle-750ml-Label.jpg` (164) |
-| 186 | `olive-emerald-green-750ml-330ml-hd.jpg` | Products page Range photo, link previews, product 70 | `SDEMER1.jpg` (161) |
+| 196 | `olive-white-750ml-330ml-hd2.jpg` | Home hero | `SD-White-2-Glass-Bottles-750ml-330ml-Label-final-1.jpg` (178) |
+| 191 | `olive-classic-olive-green-750ml-hd2.jpg` | Classic Olive Green cards and product 66 | `olive-classic-olive-green-750ml-v3.jpg` (153) |
+| 192 | `olive-forest-reserve-750ml-hd2.jpg` | Dark Green – Forest Reserve cards and product 67 | `olive-forest-reserve-750ml-v3.jpg` (154) |
+| 193 | `olive-deep-sapphire-blue-750ml-hd2.jpg` | Deep Sapphire Blue cards, About page photo, product 68 | `olive-deep-sapphire-blue-750ml-v3.jpg` (155) |
+| 194 | `olive-emerald-green-750ml-hd2.jpg` | Emerald Green Spring cards and product 69 | `SD-Emerald-Green-Glass-Bottle-750ml-Label.jpg` (164) |
+| 195 | `olive-emerald-green-750ml-330ml-hd2.jpg` | Products page Range photo, link previews, product 70 | `SDEMER1.jpg` (161) |
+| 201 | `olive-pure-white-750ml-hd2.jpg` | Pure White cards and product 202 | `SD-White-Glass-Bottle-750ml-Label.jpg` (174) |
 
-What the `-hd` photos have:
+What the `-hd2` photos have:
 
 - **Sharp at any size.** Each photo was upscaled 4x with Real-ESRGAN and saved at 2560px on its long side (WordPress's limit before it makes a `-scaled` copy). The pages use the full-size file, and Jetpack serves smaller copies to small screens. Before this, the Home hero and the Emerald card used WordPress's 300px "medium" copies stretched to full width, which is why they looked blurred.
-- **"Product of United Kingdom" with the Union flag** on every label, big and small, matching the client's sample (`X.jpg`, media item 173). The lettering follows the curve of the label's bottom gold border, in a Palatino-style serif: gold on the green and blue labels, cream on the pale Classic Olive label, dark green on the white label. The flag is drawn, not copied, so it stays sharp.
+- **"Product of United Kingdom" with the Union flag** on every label, big and small, matching the client's sample (`X.jpg`, media item 173). The lettering follows the curve of the label's bottom gold border, sits clear of the border and of the label's divider lines, in a Palatino-style serif: gold on the green and blue labels, cream on the pale Classic Olive label, dark green on the white label. The flag is drawn, not copied, so it stays sharp.
 - **No blue banners.** Where the client's original had the blue "Product of United Kingdom" banner, it is removed and the label and its gold border rebuilt behind it.
 - **No olive sprig** on the rock in front of the bottles, and no "Design Concepts" plaque.
 
@@ -34,6 +35,7 @@ The Playwright range test fails if a page shows one of the originals or an earli
 | 135, 136, 139, 140, 141 | Banners replaced, but the gold border was redrawn as a thin flat line, so the lettering sat on it |
 | 147, 148, 149 | Bottle labels fixed, but the big labels had no lettering, unlike the Emerald Green one |
 | 145, 146, 153, 154, 155 | Capitals lettering with no flag, an olive sprig on the rock, and only about 1000px across |
+| 182–187 (`-hd`) | On some labels the lettering was too wide, so "Product" ran into the curved border and the flag touched a divider line |
 
 ## The scripts
 
@@ -45,6 +47,6 @@ python3 upscale.py work/classic_s1.png work/classic_x4.png   # 4x Real-ESRGAN up
 python3 render.py classic        # curved lettering and flag at 2.5x the source size
 ```
 
-`cfg.py` has one entry per photo: the source file, where each label's bottom border runs (three rough points; the script fits the exact curve), the blue banner boxes, and the outlines of the olive sprigs and the plaque. A new photo needs its own entry.
+`cfg.py` has one entry per photo: the source file, where each label's bottom border runs (three rough points; the script fits the exact curve), the blue banner boxes, and the outlines of the olive sprigs and the plaque. Per label, `w` sets the lettering's width as a share of the border span (0.58 on the big labels, 0.74 on the bottles), and `xc` and `lift` move it sideways and up where a label needs it, as on the big label of the 750ml/330ml photo, whose divider lines run lower. A new photo needs its own entry.
 
 `replace-uk-banner.ps1` is the earlier Windows PowerShell script that made the `-v3` photos. It is kept for reference.
